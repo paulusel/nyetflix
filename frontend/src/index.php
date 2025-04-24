@@ -1,10 +1,6 @@
-<html lang="en">
-    <head>
-        <title>NyetFlix</title>
-    </head>
-    <body>
-        <div>
-            <p>Hello Movies</p>
-        <dib>
-    <body>
-</html>
+<?php
+
+//if cookie is found redirect to home.php
+//else redirect to login.php
+
+?>
