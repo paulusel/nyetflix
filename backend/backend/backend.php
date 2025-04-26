@@ -1,7 +1,5 @@
 <?php
 
-include "../logger.php";
-
 class BackendException extends Exception {}
 
 class Backend
@@ -9,23 +7,23 @@ class Backend
     private static $db_host = "localhost";
     private static $db_name = "nyetflix";
     private static $db_username = "nyetflix";
-    private static $db_password = "";
-    private static $db = null;
+    private static $db_password = "nyetflix";
 
-    public function __construct() {
+    public static function connection() : PDO {
         try {
-            $this->db = new PDO("mysql:host=$this->db_host;dbname=$this->db_name", $this->db_username, $this->db_password);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $db = new PDO("mysql:host=" . self::$db_host . ";dbname=" . self::$db_name, self::$db_username, self::$db_password);
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $db;
         }
         catch(Exception $e) {
-            Logger::log($e->getTraceAsString());
+            error_log($e->getTraceAsString());
             throw new BackendException("internal server error", 500);
         }
     }
 
-    public function getMovie(string $movie_id) : array{
+    public static function getMovie(string $movie_id) : array{
         try {
-            $db = $this->db;
+            $db = self::connection();
             $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, video, FROM lists WHERE username = ?");
             $stmnt->execute([$movie_id]);
             $result = $stmnt->fetchAll();
@@ -38,14 +36,14 @@ class Backend
             throw $e;
         }
         catch(Exception $e) {
-            Logger::log($e->getTraceAsString());
+            error_log($e->getTraceAsString());
             throw new BackendException("internal server error", 500);
         }
     }
 
-    public function getLists(string $username) : array {
+    public static function getLists(string $username) : array {
         try {
-            $db = $this->db;
+            $db = self::connection();
             $stmnt = $db->prepare("SELECT list_id, list_name FROM lists WHERE username = ?");
             $stmnt->execute([$username]);
             return $stmnt->fetchAll();
@@ -54,12 +52,12 @@ class Backend
             throw $e;
         }
         catch(PDOException $e) {
-            Logger::log($e->getTraceAsString());
+            error_log($e->getTraceAsString());
             throw new BackendException("internal server error", 500);
         }
     }
 
-    public function addUser(array $user) : void {
+    public static function addUser(array $user) : void {
         if(!isset($user->username, $user->password)) {
             throw new BackendException("invalid user data", 400);
         }
@@ -69,8 +67,17 @@ class Backend
 
         }
         catch(Exception $e) {
-            Logger::log($e->getTraceAsString());
+            error_log($e->getTraceAsString());
             throw new BackendException("internal server error", 500);
         }
     }
+
+    public static function isUsernameAvailable(string $username) : bool {
+        $db = self::connection();
+        $stmnt = $db->prepare("SELECT user_id FROM users WHERE username = ?");
+        $stmnt->execute([$username]);
+        $result = $stmnt->fetchAll();
+        return empty($result);
+    }
+
 }

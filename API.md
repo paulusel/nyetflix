@@ -2,11 +2,14 @@
 
 This contract governs the exachange of data between frontend and backend parts of the system.
 
+- Only POST requests are processed. Others are ignored either silently or with message
 - Textual data is exchanged in json format
 - Authentication method used is JWT sent as `Authorization: BEARER` header
 - Except signin/signup api request, all requests are expected to have authorization header
 - All responses from backend contain `ok` field. It is a boolean value and indicates success/failure
 - All json data fields are required, unless stated otherwise
+
+CAUTION: Exact address of endpoint may differ depending several factors. 
 
 ## Signup
 
@@ -37,12 +40,16 @@ Example:
 ```
 {
     "ok": true,
+    "username": "user",
+    "role": "user",
     "token": "ghdExkth485dkjfkdhd9ha0dkhgal8dj18",
     "profile_pic": "dieuiddkhgadkjfdkfjdk"
 }
 ```
 
 ## Signin
+
+Creates new account.
 
 ### Endpoint
 
@@ -69,12 +76,16 @@ Example:
 ```
 {
     "ok": true,
+    "username": "user",
+    "role": "user",
     "token": "ghdExkth485dkjfkdhd9ha0dkhgal8dj18",
     "profile_pic": "dieuiddkhgadkjfdkfjdk"
 }
 ```
 
 ## Lists
+
+Fetches playlists of a user.
 
 ### Endpoint
 
@@ -105,6 +116,8 @@ Example
 
 ## Series
 
+Fetches on tv-series types of movies and not short films.
+
 ### Endpoint
 
 `/series.php`
@@ -133,3 +146,5 @@ Example
   ]
 }
 ```
+
+## Usernam
