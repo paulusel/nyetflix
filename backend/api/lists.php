@@ -1,6 +1,17 @@
 <?php
 
-if($_SERVER["REQUEST_METHOD"] !== "POST") {
-    http_response_code(400);
-    exit;
+require_once "../helpers.php";
+require_once "../backend/backend.php";
+
+try {
+    validateRequest();
+    $user = idetifyUser();
+    $lists = Backend::lists($user["user_id"]);
+    sendJson($lists);
+}
+catch(BackendException $e) {
+    sendMessage($e->getMessage(), $e->getCode());
+}
+catch(Exception $e) {
+    sendMessage("internal server error", 500);
 }

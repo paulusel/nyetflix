@@ -26,10 +26,10 @@ class Backend
         return $result[0];
     }
 
-    public static function lists(string $username) : array {
+    public static function lists(int $user_id) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT list_id, list_name FROM lists WHERE username = ?");
-        $stmnt->execute([$username]);
+        $stmnt = $db->prepare("SELECT list_id, list_name FROM lists WHERE user_id = ?");
+        $stmnt->execute([$user_id]);
         $lists = $stmnt->fetchAll();
 
         foreach($lists as $list) {
@@ -42,20 +42,27 @@ class Backend
         return $lists;
     }
 
-    public static function signup(array $user) : void {
-        if(!isset($user->username, $user->password)) {
-            throw new BackendException("invalid user data", 400);
+    public static function signup(array $user) : array {
+        $db = self::connection();
+        if(!isset($user["username"], $user["password"])) {
+            throw new BackendException("missing password or username field", 400);
         }
 
-        if(!self::isUserNameAvailable($user["username"])) {
+        if(!self::isUserNameAvailable($user["username"], $db)) {
             throw new BackendException("username already taken", 400);
         }
 
         // process $user and add to database
         $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
-        $db = self::connection();
         $stmnt = $db->prepare("INSERT into users (username, password) VALUES (?, ?)");
         $stmnt->execute([$user["username"], $password_hash]);
+
+        // get user_id
+        $stmnt = $db->prepare("SELECT LAST_INSERT_ID() AS id");
+        $stmnt->execute();
+        $user["user_id"] = $stmnt->fetchAll()["id"];
+
+        return $user;
     }
 
     public static function seasons(int $movie_id, PDO $db) : array {
@@ -86,7 +93,7 @@ class Backend
         $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
 
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT role FROM users WHERE username = ? AND password = ?");
+        $stmnt = $db->prepare("SELECT user_id, username, role, picture FROM users WHERE username = ? AND password = ?");
         $stmnt->execute([$user["username"], $password_hash]);
         $result = $stmnt->fetchAll();
 
@@ -94,8 +101,7 @@ class Backend
             throw new BackendException("invalid credentials", 400);
         }
 
-        $user["role"] = $result[0]["role"];
-        return $user;
+        return $result[0];
     }
 
     public static function isUserNameAvailable(string $username, PDO | null $db = null) : bool {
@@ -118,10 +124,17 @@ class Backend
         return !empty($result);
     }
 
-    public static function updateme(array $user) : void {
+    public static function updateme(int $user_id, array $user) : void {
         $updates = [];
         $values = [];
+
+        $db = self::connection();
+
         if(isset($user["username"])) {
+            if(!self::isUserNameAvailable($user["username"], $db)) {
+                throw new BackendException("username already taken", 400);
+            }
+
             $updates[] = " username = ? ";
             $values[] = $user["username"];
         }
@@ -135,8 +148,7 @@ class Backend
             throw new BackendException("empty update", 400);
         }
 
-        $values[] = $user["user_id"];
-        $db = self::connection();
+        $values[] = $user_id;
         $stmnt = $db->prepare( "UPDATE users SET " . implode(", ", $updates) . " WHERE user_id = ?");
         $stmnt->execute($values);
     }
