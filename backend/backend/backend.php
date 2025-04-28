@@ -188,4 +188,26 @@ class Backend
         // TODO: stub
         return [];
     }
+    public function verifyUser(string $username, string $password) : array {
+        try {
+            $stmt = $this->db->prepare("SELECT id, username, password, role FROM users WHERE username = ?");
+            $stmt->execute([$username]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (password_verify($password, $user['password'])) {
+                return [
+                    'id' => $user['id'],
+                    'username' => $user['username'],
+                    'role' => $user['role']
+                ];
+            }
+
+            throw new BackendException("Invalid credentials", 401);
+        } catch (BackendException $e) {
+            throw $e;
+        } catch (Exception $e) {
+            Logger::log("BackendException: ".$e->getMessage(),"ERROR");
+            throw new BackendException("Internal server error", 500);
+        }
+    }
+
 }
