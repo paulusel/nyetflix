@@ -25,7 +25,7 @@ class Auth {
             return $payload["sub"];
         }
         catch(UnexpectedValueException $e) {
-            throw new BackendException('unauthorized', 401);
+            throw new BackendException('invalid authorization token', 401);
         }
     }
 }
