@@ -2,7 +2,7 @@
 
 require_once "backend/backend.php";
 
-function idetifyUser() : int {
+function idetifyUser() : array {
     require_once "../backend/auth.php";
 
     $authorization = $_SERVER["Authorization"];
@@ -15,7 +15,8 @@ function idetifyUser() : int {
     }
 
     $token = substr($authorization, 7);
-    return Auth::validate($token);
+    $user_id = Auth::validate($token);
+    return Backend::getme($user_id);
 }
 
 function validateRequest() : void {
