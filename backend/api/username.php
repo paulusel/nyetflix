@@ -16,6 +16,6 @@ try {
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
 }
-catch(Exception $e){
+catch(Throwable $e){
     sendMessage("internal server error", 500);
 }
