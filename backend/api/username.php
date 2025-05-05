@@ -10,7 +10,7 @@ try {
         throw new BackendException("username not specified in request", 400);
     }
 
-    $isAvailable = Backend::isUsernameAvailable($arr["username"]);
+    $isAvailable = Backend::isUserNameAvailable($arr["username"]);
     sendJson(["ok" => true, "available" => $isAvailable]);
 }
 catch(BackendException $e) {

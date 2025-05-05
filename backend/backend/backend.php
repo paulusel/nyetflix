@@ -42,6 +42,9 @@ class Backend
         return $lists;
     }
 
+    /**
+     * @param array $user
+     */
     public static function signup(array $user) : array {
         $db = self::connection();
         if(!isset($user["username"], $user["password"])) {
@@ -85,6 +88,9 @@ class Backend
         return $full_seasons;
     }
 
+    /**
+     * @param array $user
+     */
     public static function signin(array $user) : array {
         if(!isset($user->username, $user->password)) {
             throw new BackendException("invalid user data", 400);
@@ -124,6 +130,9 @@ class Backend
         return !empty($result);
     }
 
+    /**
+     * @param array $user
+     */
     public static function updateme(int $user_id, array $user) : void {
         $updates = [];
         $values = [];
