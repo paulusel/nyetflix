@@ -16,6 +16,8 @@ try {
     sendJson($movie);
 }
 catch(BackendException $e) {
-    echo $e->getMessage();
-    exit;
+    sendMessage($e->getMessage(), $e->getCode());
+}
+catch(Throwable $e) {
+    sendMessage("internal server error", 500);
 }
