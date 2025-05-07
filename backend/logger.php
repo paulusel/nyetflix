@@ -10,7 +10,7 @@ class Logger
 {
     private static $logFile = __DIR__ . 'logs/backend.log';
 
-    public static function log(LogLevel $level, string $message) : void {
+    public static function log(string $message, LogLevel $level = LogLevel::ERROR) : void {
         if (!file_exists(dirname(self::$logFile))) {
             mkdir(dirname(self::$logFile), 0755, true);
         }
