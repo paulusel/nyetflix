@@ -139,13 +139,13 @@ class Backend
 
         $db = self::connection();
 
-        if(isset($user["username"])) {
-            if(!self::isUserNameAvailable($user["username"], $db)) {
+        if(isset($user["password"])) {
+            if(!self::isUserNameAvailable($user["password"], $db)) {
                 throw new BackendException("username already taken", 400);
             }
 
-            $updates[] = " username = ? ";
-            $values[] = $user["username"];
+            $updates[] = " password = ? ";
+            $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
         }
 
         if(isset($user["picture"])) {
