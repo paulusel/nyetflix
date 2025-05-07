@@ -1,6 +1,3 @@
 <?php
 
-//if cookie is found redirect to home.php
-//else redirect to login.php
-
-?>
+header('location: signin.php');

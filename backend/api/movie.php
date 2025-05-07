@@ -6,18 +6,21 @@ require_once "../helpers.php";
 try {
     validateRequest();
     idetifyUser();
+    $movie_id = json_decode(file_get_contents("php://input"), true);
 
-    $arr = json_decode(file_get_contents("php://input"), true);
-    if(!isset($arr) || !isset($arr["movie_id"])) {
-        throw new BackendException("username not specified in request", 400);
+    if(!$movie_id || !is_string($movie_id)) {
+        sendMessage("no movie id specified in request", 400);
+        exit;
     }
 
-    $movie = Backend::movie($arr["movie_id"]);
-    sendJson($movie);
+    $movie = Backend::movie($movie_id);
+    sendJson(["ok" => true, "movie" => $movie]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
 }
 catch(Throwable $e) {
+    require '../logger.php';
+    Logger::log($e->getMessage);
     sendMessage("internal server error", 500);
 }
