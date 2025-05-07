@@ -14,7 +14,7 @@ try {
     }
 
     Backend::updateme($user_id, $new_user);
-    sendMessage("user data updated", 200, true);
+    sendJson(["ok" => true]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());

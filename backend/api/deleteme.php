@@ -7,7 +7,7 @@ try {
     validateRequest();
     $user = idetifyUser();
     Backend::deleteme($user["user_id"]);
-    sendMessage("user deleted", 200, true);
+    sendJson(["ok" => true]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
