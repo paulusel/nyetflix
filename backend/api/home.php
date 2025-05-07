@@ -1,6 +1,19 @@
 <?php
 
-if( $_SERVER["REQUEST_METHOD"] !== "POST") {
-    http_response_code(400);
-    exit;
+require_once "../backend.php";
+require_once "../helpers.php";
+
+try {
+    validateRequest();
+    $user = idetifyUser();
+
+    // generate home data
+    sendJson(["ok" => true, "categories" => []]);
 }
+catch(BackendException $e) {
+    sendMessage($e->getMessage(), $e->getCode());
+}
+catch(Throwable $e) {
+    sendMessage("internal server error", 500);
+}
+
