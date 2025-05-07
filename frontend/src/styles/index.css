@@ -35,7 +35,7 @@ button {
 
 a {
   text-decoration: none;
-  color: gray;
+  color: white;
   font-size: 0.8vw;
 }
 
@@ -57,6 +57,36 @@ a:hover {
   font-weight: 700;
   font-size: 1.6vw;
   margin: 1vw 0;
+}
+
+.genre {
+    padding: 60px 0px 0px 60px;
+    display: flex;
+    align-items: center;
+}
+
+.genre-type {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid gray;
+    background-color: var(--background-color);
+    color: white;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.genre-type:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.genre-type option {
+    background-color: #000;
+    color: white;
+    padding: 100px;
+}
+.genre + main {
+    margin-bottom: 10px;
 }
 
 .description {

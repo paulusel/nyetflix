@@ -15,6 +15,38 @@
   cursor: pointer;
 }
 
+
+.item {
+  position: relative;
+  display: block;
+  flex: 1 1 0px;
+  transition: transform 500ms;
+}
+
+/* TODO - starter for hover effect, there still more needs to be done */
+
+.content:focus-within .item,
+.content:hover .item {
+  transform: translateX(-25%);
+}
+
+.item:focus ~ .item,
+.item:hover ~ .item {
+  transform: translateX(25%);
+}
+
+.content .item:focus,
+.content .item:hover {
+  transform: scale(1.5);
+  z-index: 1;
+}
+
+
+.item img {
+  display: block;
+  max-width: 100%;
+}
+
 .slider {
   overflow-x: scroll;
   white-space: nowrap;

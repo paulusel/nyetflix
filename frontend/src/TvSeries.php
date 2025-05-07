@@ -19,112 +19,93 @@
     />
   </head>
     <body>
+      <header>
         <nav>
-            <div class="left">
-          <img src="../assets/images/Icon/logo.png" class="brand" />
-          <div class="nav-item small">Browse</div>
-          <ul class="nav-items">
-            <a href="#" class = "nav-items"><li class="nav-item">Home</li></a>
-            <a href="TvSeries.php" class = "nav-items"><li class="nav-item">TV Shows</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">Movies</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">Latest</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">My List</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">Browse by Languages</li></a>
-          </ul>
-            </div>
-        <div class="right">
-          <ul class="nav-icons">
-            <div class="nav-item icon">
-              <i data-feather="search"></i>
-            </div>
-            <div class="nav-item icon">
-              <i data-feather="bell"></i>
-            </div>
-            <div class="nav-item icon">
-              <!-- src is handled by javascript -->
-              <img
-                alt="profile icon"
-              />
-              <i class="hide" data-feather="chevron-down"></i>
-            </div>
-          </ul>
-        </div>
-        </nav>
-
-      <main>
-          <div class="top">
-            <img
-              src="../assets/images/Main/Top/The Grey Man.jpg"
-              alt="background-image"
-              class="bg-image"
-          />
-          <div class="dark-left"></div>
-          <div class="dark-bottom"></div>
-
-          <div class="billboard">
-            <img
-              src="../assets/images/Main/Top/billboard.jpg"
-              alt="bg-img"
-            />
-            <div class="title">Watch Now</div>
-            <div class="description">
-              A CIA agent with an matched skills. A rogue enemy with a conscience. From Bangkok to Berlin, Vienna to Prague, it's a deadly game of cat and mouse.
-            </div>
-            <div class="buttons">
-              <button class="play-btn">
-                <i class="fa fa-play"></i>
-                <div>Play</div>
-              </button>
-
-              <button class="info-btn">
-                <i data-feather="info"></i>
-                <div>More Info</div>
-              </button>
-            </div>
+          <div class="left">
+            <img src="../assets/images/Icon/logo.png" class="brand" />
+            <div class="nav-item small">Browse</div>
+            <ul class="nav-items">
+              <a href="home.php" class = "nav-items"><li class="nav-item">Home</li></a>
+              <a href="#" class = "nav-items"><li class="nav-item">TV Shows</li></a>
+              <a href="#" class = "nav-items"><li class="nav-item">Movies</li></a>
+              <a href="#" class = "nav-items"><li class="nav-item">Latest</li></a>
+              <a href="#" class = "nav-items"><li class="nav-item">My List</li></a>
+              <a href="#" class = "nav-items"><li class="nav-item">Browse by Languages</li></a>
+            </ul>
           </div>
-          <div class="content-row column">
-            <div class="title">Get In on the Action</div>
-            <div class="slider">
-              <div class="content">
-                <img class = "item"
-                  src="../assets/images/Main/Body/Row1/Prison-Break.jpg"
-                />
+          <div class="right">
+            <ul class="nav-icons">
+              <div class="nav-item icon">
+                <i data-feather="search"></i>
               </div>
-              <div class="content">
-                <img class = "item"
-                  src="../assets/images/Main/Body/Row1/TOP-BOY.jpg"
-                />
+              <div class="nav-item icon">
+                <i data-feather="bell"></i>
               </div>
-              <div class="content">
-                <img class = "item"
-                  src="../assets/images/Main/Body/Row1/Money-Heist.jpg"
+              <div class="nav-item icon">
+                <!-- src is handled by javascript -->
+                <img
+                alt="profile icon"
                 />
+                <i class="hide" data-feather="chevron-down"></i>
               </div>
-              <div class="content">
-                <img class = "item"
-                src="../assets/images/Main/Body/Row1/Night-Agent.jpg"
-                />
-              </div>
-              <div class="content">
-                <img class = "item"
-                src="../assets/images/Main/Body/Row1/The Rookie.jpg"
-                />
-              </div>
-              <div class="content">
-                <img class = "item"
-                src="../assets/images/Main/Body/Row1/Vikings.jpg"
-                />
-              </div>
-              <div class="content">
-                <img class = "item"
-                src="../assets/images/Main/Body/Row1/SUPACELL.jpg"
-                />
-              </div>
-              <div class="content">
-                <img class = "item"
-                src="../assets/images/Main/Body/Row1/The-Union.jpg"
-                />
-              </div>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <div class="genre">
+        <select name="genre-type" id="play-btn" class="genre-type">
+          <option value="">--Select Genre--</option>
+          <option value="Action">Action</option>
+          <option value="Comedy">Comedy</option>
+          <option value="Drama">Drama</option>
+          <option value="Horror">Horror</option>
+          <option value="Thriller">Thriller</option>
+          <option value="Fantasy">Fantasy</option>
+        </select>
+      </div>
+      <main>
+        <div class="content-row column">
+          <div class="title">Get In on the Action</div>
+          <div class="slider">
+            <div class="content">
+              <img class = "item"
+              src="../assets/images/Main/Body/Row1/Prison-Break.jpg"
+              />
+            </div>
+            <div class="content">
+              <img class = "item"
+                src="../assets/images/Main/Body/Row1/TOP-BOY.jpg"
+              />
+            </div>
+            <div class="content">
+              <img class = "item"
+                src="../assets/images/Main/Body/Row1/Money-Heist.jpg"
+              />
+            </div>
+            <div class="content">
+              <img class = "item"
+              src="../assets/images/Main/Body/Row1/Night-Agent.jpg"
+              />
+            </div>
+            <div class="content">
+              <img class = "item"
+              src="../assets/images/Main/Body/Row1/The Rookie.jpg"
+              />
+            </div>
+            <div class="content">
+              <img class = "item"
+              src="../assets/images/Main/Body/Row1/Vikings.jpg"
+              />
+            </div>
+            <div class="content">
+              <img class = "item"
+              src="../assets/images/Main/Body/Row1/SUPACELL.jpg"
+              />
+            </div>
+            <div class="content">
+              <img class = "item"
+              src="../assets/images/Main/Body/Row1/The-Union.jpg"
+              />
             </div>
           </div>
         </div>
