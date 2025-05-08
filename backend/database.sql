@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 25, 2025 at 01:15 PM
+-- Generation Time: May 08, 2025 at 07:03 PM
 -- Server version: 11.7.2-MariaDB
 -- PHP Version: 8.4.6
 
@@ -31,6 +31,19 @@ CREATE TABLE `episodes` (
   `season_id` int(11) NOT NULL,
   `episode_no` smallint(6) NOT NULL,
   `movie_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `history`
+--
+
+CREATE TABLE `history` (
+  `user_id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
+  `position` int(11) DEFAULT 0,
+  `visited` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -126,7 +139,9 @@ CREATE TABLE `seasons` (
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `username` varchar(20) DEFAULT NULL,
-  `password` varchar(50) NOT NULL
+  `password` varchar(50) NOT NULL,
+  `role` varchar(10) NOT NULL DEFAULT 'user',
+  `picture` varchar(20) NOT NULL DEFAULT 'default_picture'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -139,6 +154,13 @@ CREATE TABLE `users` (
 ALTER TABLE `episodes`
   ADD PRIMARY KEY (`season_id`,`episode_no`),
   ADD UNIQUE KEY `season_id` (`season_id`,`movie_id`),
+  ADD KEY `movie_id` (`movie_id`);
+
+--
+-- Indexes for table `history`
+--
+ALTER TABLE `history`
+  ADD PRIMARY KEY (`user_id`,`movie_id`),
   ADD KEY `movie_id` (`movie_id`);
 
 --
@@ -219,7 +241,7 @@ ALTER TABLE `seasons`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -231,6 +253,13 @@ ALTER TABLE `users`
 ALTER TABLE `episodes`
   ADD CONSTRAINT `episodes_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`),
   ADD CONSTRAINT `episodes_ibfk_2` FOREIGN KEY (`season_id`) REFERENCES `seasons` (`season_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `history`
+--
+ALTER TABLE `history`
+  ADD CONSTRAINT `history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `history_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `lists`
