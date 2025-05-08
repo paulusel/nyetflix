@@ -211,6 +211,55 @@ Example:
     }
 ```
 
+## Seasons
+
+For movies that series type, fetches all seasons of the series and their episodes.
+
+### Endpoint
+
+`api/seasons.php`
+
+### Request
+
+A single and only string specifying movie series id whose seasons is being requested.
+
+Example: ```"aseriesmovidadid"```
+
+### Response
+
++ `movie`: movie information. If json has video section, it is means the movie is a short film. Otherwise it is a series.
+
+Example:
+
+```
+  "ok": true,
+  "movie_id": 843940098,
+  "seasons": [
+    {
+        "season_id": 74593873,
+        "season_no": 2,
+        "title": "The desert",
+        "description": "Two guys wandering out in the desert ...",
+        "episodes": [
+            {
+                "episode_no": 1,
+                "movie_id": 43663684,
+                "title": "Breaking Bad",
+                "description": "A high school chemistry teacher ...",
+                "thumbnail": "dkghaidufo8jfh",
+                "video":  "dkdkhgadkkdjfk"
+            },
+            {
+                ...
+            }
+        ]
+    },
+    {
+        ...
+    }
+]
+```
+
 ## Updateme
 
 Update user information. This can be used to change user password and the like.
@@ -262,4 +311,45 @@ Example:
     "ok": true
 }
 ```
+
+## Watch
+
+Start streaming a video. Can be used to fetch both playlists and segments.
+
+### Endpoint
+
+`api/watch.php`
+
+### Request
+
++ `movie_id` - Id of movie whose stream data is being requested.
++ `request_type` - type information requested. Either `manifest` for playlist or `segement` for fetching segments.
++ `segment_info` - (optional) if request type is `segment`, this array provides more info about the segment. It has:
+    - `sgement_no` - if request type is `segment`, segment_no of the segment.
+    - `start` - starting position of segment(in seconds) from the beginning video.
+
+Example: playlist request
+```
+
+{
+    "movie_id": 4808477627,
+    "request_type": "manifest"
+}
+```
+Example: segment request
+
+```
+{
+    "movie_id": 4808477627,
+    "request_type": "segment",
+    "segment_info" : {
+        "segment_no": 353,
+        "start": 23454
+    }
+}
+```
+
+### Response
+
+Binary data. `Content-Type` header is set to `application/vnd.apple.mpegurl` for playlist response and `video/MP2T` to segment responses.
 
