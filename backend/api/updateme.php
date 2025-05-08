@@ -13,7 +13,7 @@ try {
         exit;
     }
 
-    Backend::updateme($user_id, $new_user);
+    Backend::updateMe($user_id, $new_user);
     sendJson(["ok" => true]);
 }
 catch(BackendException $e) {

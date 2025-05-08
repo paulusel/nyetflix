@@ -8,6 +8,8 @@ try {
     $user = idetifyUser();
 
     // generate home data
+    // TODO: Generate movie lists
+
     sendJson(["ok" => true, "categories" => []]);
 }
 catch(BackendException $e) {

@@ -13,7 +13,7 @@ try {
         exit;
     }
 
-    $movie = Backend::movie($movie_id);
+    $movie = Backend::getMovie($movie_id);
     sendJson(["ok" => true, "movie" => $movie]);
 }
 catch(BackendException $e) {

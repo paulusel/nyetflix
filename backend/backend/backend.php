@@ -1,9 +1,10 @@
 <?php
 
+require_once '../logger.php';
+
 class BackendException extends Exception {}
 
-class Backend
-{
+class Backend {
     private static $db_host = "localhost";
     private static $db_name = "nyetflix";
     private static $db_username = "nyetflix";
@@ -12,29 +13,31 @@ class Backend
     private static function connection() : PDO {
         $db = new PDO("mysql:host=" . self::$db_host . ";dbname=" . self::$db_name, self::$db_username, self::$db_password);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         return $db;
     }
 
-    public static function movie(string $movie_id) : array{
+    public static function getMovie(string $movie_id) : array{
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, video, FROM lists WHERE username = ?");
+        $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, video, FROM movies WHERE movie_id = ?");
         $stmnt->execute([$movie_id]);
-        $result = $stmnt->fetchAll();
-        if(empty($result)) {
+        $movie = $stmnt->fetch();
+        if(!$movie) {
             throw new BackendException("movie not found", 404);
         }
-        return $result[0];
+        return $movie;
     }
 
-    public static function lists(int $user_id) : array {
+    public static function getLists(int $user_id) : array {
         $db = self::connection();
         $stmnt = $db->prepare("SELECT list_id, list_name FROM lists WHERE user_id = ?");
         $stmnt->execute([$user_id]);
         $lists = $stmnt->fetchAll();
 
+        $stmnt = $db->prepare("SELECT movie_id, movie_id, title, description, thumbnail, video
+            FROM user_lists JOIN movies ON user_lists.movie_id = movies.movie_id WHERE list_id = ?");
+
         foreach($lists as $list) {
-            $stmnt = $db->prepare("SELECT movie_id, movie_id, title, description, thumbnail, video
-                FROM user_lists JOIN movies ON user_lists.movie_id = movies.movie_id WHERE list_id = ?");
             $stmnt->execute([$list["list_id"]]);
             $list["movies"] = $stmnt->fetchAll();
         }
@@ -43,17 +46,22 @@ class Backend
     }
 
     /**
-     * @param array $user
+     * @param array $user: new user information. Must contain 'username' and password
+     * @return array: user information after addition of user_id to it
      */
     public static function signup(array $user) : array {
-        $db = self::connection();
+        if(!isset($user->username, $user->password)) {
+            throw new BackendException("invalid user data", 400);
+        }
         if(!isset($user["username"], $user["password"])) {
             throw new BackendException("missing password or username field", 400);
         }
 
-        if(!self::isUserNameAvailable($user["username"], $db)) {
+        if(!self::isUserNameAvailable($user["username"])) {
             throw new BackendException("username already taken", 400);
         }
+
+        $db = self::connection();
 
         // process $user and add to database
         $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
@@ -68,28 +76,9 @@ class Backend
         return $user;
     }
 
-    public static function seasons(int $movie_id, PDO $db) : array {
-        $full_seasons = [];
-
-        $db = $db ? $db : self::connection();
-        $stmnt = $db->prepare("SELECT season_id, season_no, title, description FROM seasons WHERE movie_id = ?");
-        $stmnt->execute([$movie_id]);
-
-        foreach($stmnt->fetchAll() as $season ) {
-            $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, video " .
-                " FROM episodes JOIN movies ON episodes.movie_id = movies.movie_id WHERE season_id = ?");
-            $stmnt->execute([$season["season_id"]]);
-            $episodes = $stmnt->fetchAll();
-
-            $season["episodes"] = $episodes;
-            $full_seasons[] = $season;
-        }
-
-        return $full_seasons;
-    }
-
     /**
-     * @param array $user
+     * @param array $user: new user information. Must contain 'username' and password
+     * @return array: same user information after missing fields are filled in.
      */
     public static function signin(array $user) : array {
         if(!isset($user->username, $user->password)) {
@@ -101,49 +90,48 @@ class Backend
         $db = self::connection();
         $stmnt = $db->prepare("SELECT user_id, username, role, picture FROM users WHERE username = ? AND password = ?");
         $stmnt->execute([$user["username"], $password_hash]);
-        $result = $stmnt->fetchAll();
+        $user = $stmnt->fetch();
 
-        if(empty($result)) {
+        if(!$user) {
             throw new BackendException("invalid credentials", 400);
         }
 
-        return $result[0];
+        return $user;
     }
 
-    public static function isUserNameAvailable(string $username, PDO | null $db = null) : bool {
-        if(is_null($db)) {
-            $db = self::connection();
-        }
+    public static function isUserNameAvailable(string $username) : bool {
+        $db = self::connection();
         $stmnt = $db->prepare("SELECT user_id FROM users WHERE username = ?");
         $stmnt->execute([$username]);
         $result = $stmnt->fetchAll();
         return empty($result);
     }
 
-    public static function checkUser(int $user_id, PDO | null $db = null) : bool {
-        if(is_null($db)) {
-            $db = self::connection();
-        }
+    /**
+     * Check whether associated with a user_id is valid
+     * @param int $user_id: user id to be checked
+     * @return bool: true if user exists, false otherwise
+     */
+    private static function checkUser(int $user_id) : bool {
+        $db = self::connection();
         $stmnt = $db->prepare("SELECT username FROM users WHERE user_id = ?");
         $stmnt->execute([$user_id]);
-        $result = $stmnt->fetchAll();
-        return !empty($result);
+        return !$stmnt->fetch();
     }
 
     /**
-     * @param array $user
+     *  Update user information.
+     *
+     * @param array $user data to replace existing user information
+     * @param int $user_id user_id whose information is to be updated
      */
-    public static function updateme(int $user_id, array $user) : void {
+    public static function updateMe(int $user_id, array $user) : void {
         $updates = [];
         $values = [];
 
         $db = self::connection();
 
         if(isset($user["password"])) {
-            if(!self::isUserNameAvailable($user["password"], $db)) {
-                throw new BackendException("username already taken", 400);
-            }
-
             $updates[] = " password = ? ";
             $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
         }
@@ -162,9 +150,9 @@ class Backend
         $stmnt->execute($values);
     }
 
-    public static function deleteme(int $user_id) : void {
+    public static function deleteMe(int $user_id) : void {
         $db = self::connection();
-        if(!self::checkUser($user_id, $db)) {
+        if(!self::checkUser($user_id)) {
             throw new BackendException("user not found", 404);
         }
 
@@ -172,42 +160,75 @@ class Backend
         $stmnt->execute([$user_id]);
     }
 
-    public static function getme(int $user_id) : array {
+    public static function getMe(int $user_id) : array {
         $db = self::connection();
         $stmnt = $db->prepare("SELECT user_id, username, role, picture FROM users WHERE user_id = ?");
         $stmnt->execute([$user_id]);
-        $rows = $stmnt->fetchAll();
-        if(empty($rows)) {
+        $user = $stmnt->fetch();
+        if(!$user) {
             throw new BackendException("user not found", 404);
         }
-
-        return $rows[0];
+        return $user;
     }
 
-    public static function home(int $user_id) : array {
+    public function verifyUser(string $username, string $password) : array {
+        $stmt = $this->db->prepare("SELECT id, username, password, role FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
+
+        if (!password_verify($password, $user['password'])) {
+            throw new BackendException("Invalid credentials", 401);
+        }
+
+        return [
+            'id' => $user['id'],
+            'username' => $user['username'],
+            'role' => $user['role']
+        ];
+    }
+
+    public static function getHome(int $user_id) : array {
         // TODO: stub
         return [];
     }
-    public function verifyUser(string $username, string $password) : array {
-        try {
-            $stmt = $this->db->prepare("SELECT id, username, password, role FROM users WHERE username = ?");
-            $stmt->execute([$username]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (password_verify($password, $user['password'])) {
-                return [
-                    'id' => $user['id'],
-                    'username' => $user['username'],
-                    'role' => $user['role']
-                ];
-            }
 
-            throw new BackendException("Invalid credentials", 401);
-        } catch (BackendException $e) {
-            throw $e;
-        } catch (Exception $e) {
-            Logger::log("BackendException: ".$e->getMessage(),"ERROR");
-            throw new BackendException("Internal server error", 500);
-        }
+    public static function recordHistory(int $user_id, int $movie_id, float $position) : void {
+        // user_id, movie_id, position, timestamp
     }
 
+    public static function getSeries() : array {
+        $db = self::connection();
+        $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail FROM movies WHERE video IS NULL");
+        $stmnt->execute();
+        return $stmnt->fetchAll();
+    }
+
+    public static function getSeasons(int $movie_id) : array {
+        $db = self::connection();
+        $full_seasons = [];
+        $stmnt = $db->prepare("SELECT season_id, season_no, title, description FROM seasons WHERE movie_id = ?");
+        $stmnt->execute([$movie_id]);
+        $seasons = $stmnt->fetchAll();
+
+        $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, video " .
+            " FROM episodes JOIN movies ON episodes.movie_id = movies.movie_id WHERE season_id = ? AND movie_id = ?");
+
+        foreach($seasons as $season ) {
+            $stmnt->execute([$season["season_id"], $movie_id]);
+            $episodes = $stmnt->fetchAll();
+
+            $season["episodes"] = $episodes;
+            $full_seasons[] = $season;
+        }
+
+        return $full_seasons;
+    }
+
+    public static function getEpisodes(int $movie_id, int $season_id) : array {
+        $db = self::connection();
+        $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, video " .
+            " FROM episodes JOIN movies ON episodes.movie_id = movies.movie_id WHERE season_id = ? AND movie_id = ?");
+        $stmnt->execute([$season_id, $movie_id]);
+        return $stmnt->fetchAll();
+    }
 }

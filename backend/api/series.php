@@ -1,13 +1,12 @@
 <?php
 
-require_once "../helpers.php";
-require_once "../backend/backend.php";
+require_once '../backend/backend.php';
+require_once '../helpers.php';
 
 try {
-    validateRequest();
     $user = idetifyUser();
-    Backend::deleteMe($user["user_id"]);
-    sendJson(["ok" => true]);
+    $series = Backend::getSeries();
+    sendJson(['ok' => true, 'series' => $series]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
@@ -17,3 +16,4 @@ catch(Throwable $e){
     Logger::log($e->getMessage);
     sendMessage("internal server error", 500);
 }
+

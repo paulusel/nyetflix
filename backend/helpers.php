@@ -5,18 +5,11 @@ require_once "backend/backend.php";
 function idetifyUser() : array {
     require_once "../backend/auth.php";
 
-    $authorization = $_SERVER["Authorization"];
-    if(is_null($authorization)) {
-        throw new BackendException("authorization header not found", 400);
-    }
+    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    $token = str_replace('Bearer ', '', $header);
 
-    if(0 !== strpos($authorization, "Bearer ")) {
-        throw new BackendException("authorization header not found", 400);
-    }
-
-    $token = substr($authorization, 7);
     $user_id = Auth::validate($token);
-    return Backend::getme($user_id);
+    return Backend::getMe($user_id);
 }
 
 function validateRequest() : void {

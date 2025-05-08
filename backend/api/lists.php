@@ -6,7 +6,7 @@ require_once "../backend/backend.php";
 try {
     validateRequest();
     $user = idetifyUser();
-    $lists = Backend::lists($user["user_id"]);
+    $lists = Backend::getLists($user["user_id"]);
     sendJson($lists);
 }
 catch(BackendException $e) {
