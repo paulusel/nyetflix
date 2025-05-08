@@ -53,6 +53,7 @@ class Backend {
         if(!isset($user->username, $user->password)) {
             throw new BackendException("invalid user data", 400);
         }
+
         if(!isset($user["username"], $user["password"])) {
             throw new BackendException("missing password or username field", 400);
         }
@@ -71,7 +72,7 @@ class Backend {
         // get user_id
         $stmnt = $db->prepare("SELECT LAST_INSERT_ID() AS id");
         $stmnt->execute();
-        $user["user_id"] = $stmnt->fetchAll()["id"];
+        $user["user_id"] = $stmnt->fetch()["id"];
 
         return $user;
     }
@@ -219,7 +220,7 @@ class Backend {
         $stmnt->execute([$movie_id]);
         $seasons = $stmnt->fetchAll();
 
-        $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, video " .
+        $stmnt = $db->prepare("SELECT episode_no, movie_id, title, description, thumbnail, video " .
             " FROM episodes JOIN movies ON episodes.movie_id = movies.movie_id WHERE season_id = ? AND movie_id = ?");
 
         foreach($seasons as $season ) {
