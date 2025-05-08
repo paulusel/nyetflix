@@ -19,15 +19,16 @@ try {
 
     // Sanitize video ID to prevent directory traversal
     $movieId = preg_replace('/[^a-zA-Z0-9_-]/', '', $request["video_id"]);
-    $moviePath = "media/movies/$movieId";
+    $moviePath = 'media/movies/$movieId';
 
     if ($request['request_type'] === 'manifest') {
+        Backend::insertHistory($user['user_id'], $movieId);
         servePlaylist($moviePath);
     } elseif ($request['request_type'] === 'segment') {
         if (!isset($request['segment_info']['sn'], $request['segment_info']['start'])) {
             throw new BackendException('missing segment information', 400);
         }
-        Backend::recordHistory($user['useri_d'], $movieId, $request['segment_info']['start']);
+        Backend::updateHistory($user['useri_d'], $movieId, $request['segment_info']['start']);
         serveSegment($moviePath, $request['segment_info']);
     } else {
         throw new BackendException('invalid request type', 400);

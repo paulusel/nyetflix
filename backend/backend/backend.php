@@ -192,8 +192,17 @@ class Backend {
         return [];
     }
 
-    public static function recordHistory(int $user_id, int $movie_id, float $position) : void {
+    public static function insertHistory(int $user_id, int $movie_id) : void {
+        $db = self::connection();
+        $stmnt = $db->prepare("INSERT INTO history (user_id, movie_id, position) VALUES (?, ?, 0.0)");
+        $stmnt->execute([$user_id, $movie_id]);
+    }
+
+    public static function updateHistory(int $user_id, int $movie_id, float $position) : void {
         // user_id, movie_id, position, timestamp
+        $db = self::connection();
+        $stmnt = $db->prepare("UPDATE history SET time = ?, position = ? WHERE user_id = ? AND movie_id = ?");
+        $stmnt->execute([$position, time(), $user_id, $movie_id]);
     }
 
     public static function getSeries() : array {
