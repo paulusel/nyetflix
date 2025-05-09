@@ -66,6 +66,7 @@ class Backend {
         $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
         $stmnt = $db->prepare("INSERT into users (username, password) VALUES (?, ?)");
         $stmnt->execute([$user["username"], $password_hash]);
+        unset($user["password"]);
 
         // get user_id
         $stmnt = $db->prepare("SELECT LAST_INSERT_ID() AS id");
