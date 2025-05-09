@@ -48,10 +48,6 @@ class Backend {
      * @return array: user information after addition of user_id to it
      */
     public static function signup(array $user) : array {
-        if(!isset($user->username, $user->password)) {
-            throw new BackendException("invalid user data", 400);
-        }
-
         if(!isset($user["username"], $user["password"])) {
             throw new BackendException("missing password or username field", 400);
         }
