@@ -26,6 +26,25 @@ class Backend {
         return $movie;
     }
 
+    public static function ceateList(int $user_id, string $list_name) : array {
+        try {
+            $db = self::connection();
+            $stmnt = $db->prepare("INSERT INTO lists (user_id, title) VALUES (?, ?)");
+            $stmnt->execute([$user_id, $list_name]);
+
+            $list_id = (int)$db->lastInsertId();
+            return ['list_name' => $list_name, 'list_id' => $list_id];
+        }
+        catch(PDOException $e) {
+            if($e->errorInfo[1] === 1062) {
+                throw new BackendException("list already exists", 400);
+            }
+            else {
+                throw $e;
+            }
+        }
+    }
+
     public static function getLists(int $user_id) : array {
         $db = self::connection();
         $stmnt = $db->prepare("SELECT list_id, list_name FROM lists WHERE user_id = ?");
@@ -52,24 +71,28 @@ class Backend {
             throw new BackendException("missing password or username field", 400);
         }
 
-        if(!self::isUserNameAvailable($user["username"])) {
-            throw new BackendException("username already taken", 400);
+        try {
+            $db = self::connection();
+            $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
+            $stmnt = $db->prepare("INSERT into users (username, password) VALUES (?, ?)");
+            $stmnt->execute([$user["username"], $password_hash]);
+            unset($user["password"]);
+
+            // get user_id
+            $stmnt = $db->prepare("SELECT LAST_INSERT_ID() AS id");
+            $stmnt->execute();
+            $user["user_id"] = $stmnt->fetch()["id"];
+
+            return $user;
         }
-
-        $db = self::connection();
-
-        // process $user and add to database
-        $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
-        $stmnt = $db->prepare("INSERT into users (username, password) VALUES (?, ?)");
-        $stmnt->execute([$user["username"], $password_hash]);
-        unset($user["password"]);
-
-        // get user_id
-        $stmnt = $db->prepare("SELECT LAST_INSERT_ID() AS id");
-        $stmnt->execute();
-        $user["user_id"] = $stmnt->fetch()["id"];
-
-        return $user;
+        catch(PDOException $e) {
+            if($e->errorInfo[1] === 1062) {
+                throw new BackendException("username already taken", 400);
+            }
+            else {
+                throw $e;
+            }
+        }
     }
 
     /**
