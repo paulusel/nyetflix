@@ -3,6 +3,7 @@
 require_once __DIR__ . '../includes.php';
 
 try {
+    validateRequest();
     $username = json_decode(file_get_contents("php://input"), true);
 
     if(!$username || !is_string($username)) {

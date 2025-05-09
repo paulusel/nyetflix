@@ -3,6 +3,7 @@
 require_once __DIR__ . '../includes.php';
 
 try {
+    validateRequest();
     $user = idetifyUser();
     $series = Backend::getSeries();
     sendJson(['ok' => true, 'series' => $series]);

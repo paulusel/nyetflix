@@ -4,6 +4,7 @@ require_once __DIR__ . '/../includes.php';
 require_once __DIR__ . '/../backend/auth.php';
 
 try {
+    validateRequest();
     $user = json_decode(file_get_contents("php://input"), true);
 
     if(!$user || !is_array($user)) {
@@ -19,7 +20,9 @@ catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
 }
 catch(Throwable $e){
-    require '../logger.php';
-    Logger::log($e->getMessage);
+    require __DIR__ . '/../logger.php';
+    //Logger::log($e->getMessage());
+    echo $e->getMessage();
+    echo $e->getTraceAsString();
     sendMessage("internal server error", 500);
 }
