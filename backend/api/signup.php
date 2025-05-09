@@ -21,8 +21,6 @@ catch(BackendException $e) {
 }
 catch(Throwable $e){
     require __DIR__ . '/../logger.php';
-    //Logger::log($e->getMessage());
-    echo $e->getMessage();
-    echo $e->getTraceAsString();
+    Logger::log($e->getMessage());
     sendMessage("internal server error", 500);
 }

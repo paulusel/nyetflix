@@ -20,6 +20,6 @@ catch(BackendException $e) {
 }
 catch(Throwable $e){
     require '../logger.php';
-    Logger::log($e->getMessage);
+    Logger::log($e->getMessage());
     sendMessage("internal server error", 500);
 }
