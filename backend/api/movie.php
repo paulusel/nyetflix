@@ -1,7 +1,6 @@
 <?php
 
-require_once "../backend.php";
-require_once "../helpers.php";
+require_once "../includes.php";
 
 try {
     validateRequest();

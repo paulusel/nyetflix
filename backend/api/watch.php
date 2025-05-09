@@ -1,11 +1,6 @@
 <?php
 
-require_once '../backend/backend.php';
-require_once '../helpers.php';
-
-header('Content-Type: application/json');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Methods: POST');
+require_once '../includes.php';
 
 try {
     validateRequest();

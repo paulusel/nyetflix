@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '../includes.php';
+
 try {
     validateRequest();
     $user = idetifyUser();

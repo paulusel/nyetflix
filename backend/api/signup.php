@@ -1,8 +1,7 @@
 <?php
 
-require_once "../helpers.php";
-require_once "../backend/backend.php";
-require_once "../backend/auth.php";
+require_once __DIR__ . '/../includes.php';
+require_once __DIR__ . '/../backend/auth.php';
 
 try {
     $user = json_decode(file_get_contents("php://input"), true);

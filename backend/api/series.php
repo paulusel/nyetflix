@@ -1,7 +1,6 @@
 <?php
 
-require_once '../backend/backend.php';
-require_once '../helpers.php';
+require_once __DIR__ . '../includes.php';
 
 try {
     $user = idetifyUser();
