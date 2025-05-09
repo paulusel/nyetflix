@@ -108,11 +108,11 @@ class Backend {
      * @param int $user_id: user id to be checked
      * @return bool: true if user exists, false otherwise
      */
-    private static function checkUser(int $user_id) : bool {
+    private static function getUser(int $user_id, PDO $db) : array|bool {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT username FROM users WHERE user_id = ?");
+        $stmnt = $db->prepare("SELECT user_id, username, role, picture FROM users WHERE user_id = ?");
         $stmnt->execute([$user_id]);
-        return !$stmnt->fetch();
+        return $stmnt->fetch();
     }
 
     /**
@@ -148,23 +148,21 @@ class Backend {
 
     public static function deleteMe(int $user_id) : void {
         $db = self::connection();
-        if(!self::checkUser($user_id)) {
+        if(!self::getUser($user_id, $db)) {
             throw new BackendException("user not found", 404);
         }
 
-        $stmnt = $db->prepare("DELETE FROM users WHERE users_id = ?");
+        $stmnt = $db->prepare("DELETE FROM users WHERE user_id = ?");
         $stmnt->execute([$user_id]);
     }
 
     public static function getMe(int $user_id) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT user_id, username, role, picture FROM users WHERE user_id = ?");
-        $stmnt->execute([$user_id]);
-        $user = $stmnt->fetch();
+        $user = self::getUser($user_id, $db);
         if(!$user) {
             throw new BackendException("user not found", 404);
         }
-        return $user;
+        return (array)$user;
     }
 
     public function verifyUser(string $username, string $password) : array {
