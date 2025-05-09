@@ -5,8 +5,11 @@ require_once "backend/backend.php";
 function idetifyUser() : array {
     require_once "../backend/auth.php";
 
-    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    $headers = getallheaders();
+    $header = $headers['Authorization'] ?? '';
+
     $token = str_replace('Bearer ', '', $header);
+    $token = trim($token);
 
     $user_id = Auth::validate($token);
     return Backend::getMe($user_id);
