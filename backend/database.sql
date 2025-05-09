@@ -138,7 +138,7 @@ CREATE TABLE `seasons` (
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
-  `username` varchar(20) DEFAULT NULL,
+  `username` varchar(100) DEFAULT NULL,
   `password` varchar(50) NOT NULL,
   `role` varchar(10) NOT NULL DEFAULT 'user',
   `picture` varchar(20) NOT NULL DEFAULT 'default_picture'
