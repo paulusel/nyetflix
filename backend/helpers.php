@@ -30,6 +30,7 @@ function sendMessage(string $message, int $statusCode = 400, bool $ok = false) {
 }
 
 function sendJson(mixed $value, int $statusCode = 200) : void {
+    ob_clean();
     header("Content-Type: application/json");
     http_response_code($statusCode);
     echo json_encode($value);

@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '../includes.php';
+require_once __DIR__ . '/../includes.php';
 
 try {
     validateRequest();
-    $user_id = idetifyUser();
+    $user = idetifyUser();
     $new_user = json_decode(file_get_contents("php://input"), true);
 
     if(!$new_user || !is_array($new_user)) {
@@ -12,7 +12,7 @@ try {
         exit;
     }
 
-    Backend::updateMe($user_id, $new_user);
+    Backend::updateMe($user['user_id'], $new_user);
     sendJson(["ok" => true]);
 }
 catch(BackendException $e) {

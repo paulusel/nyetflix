@@ -130,7 +130,7 @@ class Backend {
 
         if(isset($user["password"])) {
             $updates[] = " password = ? ";
-            $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
+            $values[] = password_hash($user["password"], PASSWORD_DEFAULT);
         }
 
         if(isset($user["picture"])) {
@@ -138,7 +138,7 @@ class Backend {
             $values[] = $user["picture"];
         }
 
-        if(empty($updates) || !isset($user["user_id"])) {
+        if(empty($updates)) {
             throw new BackendException("empty update", 400);
         }
 
