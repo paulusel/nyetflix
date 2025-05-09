@@ -1,14 +1,16 @@
 <?php
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use UnexpectedValueException;
-
-require_once 'backend.php';
 
 class Auth {
+    private static string $priva_key_file = __DIR__ . '/private.key';
+    private static string $public_key_file = __DIR__ . '/public.key';
+
     public static function newToken(int $user_id) : string {
-        static $priv_key = file_get_contents('private.key');
+        static $priv_key = file_get_contents(self::$priva_key_file);
         $payload = [
             'iat' => time(),
             'exp' => time() + 2592000,
@@ -19,7 +21,7 @@ class Auth {
     }
 
     public static function validate(string $token) : int {
-        static $pub_key = new Key(file_get_contents('public.key'), 'RS256');
+        static $pub_key = new Key(file_get_contents(self::$public_key_file), 'RS256');
         try {
             $payload = (array)JWT::decode($token, $pub_key);
             return $payload["sub"];
