@@ -8,7 +8,7 @@ enum LogLevel {
 
 class Logger
 {
-    private static $logFile = __DIR__ . 'logs/backend.log';
+    private static $logFile = __DIR__ . '/data/logs/backend.log';
 
     public static function log(string $message, LogLevel $level = LogLevel::ERROR) : void {
         if (!file_exists(dirname(self::$logFile))) {
