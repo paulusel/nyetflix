@@ -77,22 +77,23 @@ class Backend {
      * @return array: same user information after missing fields are filled in.
      */
     public static function signin(array $user) : array {
-        if(!isset($user->username, $user->password)) {
+        if(!isset($user['username'], $user['password'])) {
             throw new BackendException("invalid user data", 400);
         }
 
         $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
 
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT user_id, username, role, picture FROM users WHERE username = ? AND password = ?");
-        $stmnt->execute([$user["username"], $password_hash]);
-        $user = $stmnt->fetch();
+        $stmnt = $db->prepare("SELECT user_id, username, password, role, picture FROM users WHERE username = ?");
+        $stmnt->execute([$user["username"]]);
+        $stored_user = $stmnt->fetch();
 
-        if(!$user) {
-            throw new BackendException("invalid credentials", 400);
+        if(!$stored_user || !password_verify($user['password'], $stored_user['password'])) {
+            throw new BackendException("incorrect username or password", 400);
         }
 
-        return $user;
+        unset($stored_user['password']);
+        return $stored_user;
     }
 
     public static function isUserNameAvailable(string $username) : bool {
