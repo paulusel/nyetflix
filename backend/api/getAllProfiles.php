@@ -4,9 +4,10 @@ require_once "../includes.php";
 
 try {
     validateRequest();
-    $user = idetifyUser();
-    $lists = Backend::getLists($user["user_id"]);
-    sendJson($lists);
+    $user = idetifyUser(false);
+
+    $profiles = Backend::getUserProfiles($user["user_id"]);
+    sendJson(['ok' => true, 'items' => $profiles]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());

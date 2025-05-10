@@ -4,7 +4,7 @@ require_once '../includes.php';
 
 try {
     validateRequest();
-    $user = idetifyUser();
+    $profile = idetifyUser();
 
     $request = json_decode(file_get_contents('php://input'), true);
 
@@ -17,13 +17,13 @@ try {
     $movie_path = "media/movies/$movie_id";
 
     if ($request['request_type'] === 'manifest') {
-        Backend::insertHistory($user['user_id'], $movie_id);
+        Backend::insertHistory($profile['user_id'], $movie_id);
         servePlaylist($movie_path);
     } elseif ($request['request_type'] === 'segment') {
         if (!isset($request['segment_info']['sn'], $request['segment_info']['start'])) {
             throw new BackendException('missing segment information', 400);
         }
-        Backend::updateHistory($user['useri_d'], $movie_id, $request['segment_info']['start']);
+        Backend::updateHistory($profile['useri_d'], $movie_id, $request['segment_info']['start']);
         serveSegment($movie_path, $request['segment_info']);
     } else {
         throw new BackendException('invalid request type', 400);

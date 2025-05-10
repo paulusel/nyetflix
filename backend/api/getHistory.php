@@ -5,16 +5,10 @@ require_once __DIR__ . '/../backend/auth.php';
 
 try {
     validateRequest();
-    $user = json_decode(file_get_contents("php://input"), true);
+    $profile = idetifyUser();
 
-    if(!$user || !is_array($user)) {
-        sendMessage("no login data found in the request body", 400);
-        exit;
-    }
-
-    $user = Backend::signup($user);
-    $token = Auth::newToken($user["user_id"]);
-    sendJson(["ok" => true, "token" => $token, "user" => $user]);
+    $history = Backend::getHistory($profile['profile_id']);
+    sendJson(['ok' => true, 'history' => $history]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());

@@ -4,15 +4,16 @@ require_once __DIR__ . '/../includes.php';
 
 try {
     validateRequest();
-    $user = idetifyUser();
-    $new_user = json_decode(file_get_contents("php://input"), true);
+    $user = idetifyUser(false);
 
-    if(!$new_user || !is_array($new_user)) {
+    $profile = json_decode(file_get_contents("php://input"), true);
+
+    if(!$profile || !is_array($profile)) {
         sendMessage("no user data found in the request body");
         exit;
     }
 
-    Backend::updateMe($user['user_id'], $new_user);
+    Backend::updateProfile($profile['profile_id'], $profile);
     sendJson(["ok" => true]);
 }
 catch(BackendException $e) {

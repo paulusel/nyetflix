@@ -4,12 +4,10 @@ require_once "../includes.php";
 
 try {
     validateRequest();
-    $user = idetifyUser();
+    $profile = idetifyUser();
 
-    // generate home data
-    // TODO: Generate movie lists
-
-    sendJson(["ok" => true, "categories" => []]);
+    $items = Backend::listItems($profile['user_id']);
+    sendJson(['ok' => true, 'items' => $items]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
@@ -19,4 +17,3 @@ catch(Throwable $e) {
     Logger::log($e->getMessage());
     sendMessage("internal server error", 500);
 }
-
