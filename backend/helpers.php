@@ -2,7 +2,7 @@
 
 require_once "backend/backend.php";
 
-function idetifyUser() : array {
+function idetifyUser(bool $require_profile = true) : array {
     require_once "../backend/auth.php";
 
     $headers = getallheaders();
@@ -11,8 +11,15 @@ function idetifyUser() : array {
     $token = str_replace('Bearer ', '', $header);
     $token = trim($token);
 
-    $user_id = Auth::validate($token);
-    return Backend::getMe($user_id);
+    $user = Auth::validate($token);
+    if(require_profile) {
+        if(isset($user['profile_id'])) {
+            return Backend::getProfile($user['profile_id']);
+        }
+        throw new BackendException('profile is not set. create or set one before making this request');
+    }
+
+    return Backend::getUser($user['user_id']);
 }
 
 function validateRequest() : void {
