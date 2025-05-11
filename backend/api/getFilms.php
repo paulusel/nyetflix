@@ -1,10 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../includes.php';
-require_once __DIR__ . '/../backend/auth.php';
 
 try {
-    validateRequest();
+    validateRequest(false);
     $profile = idetifyUser();
 
     $films = Backend::getFilmsSeries(1);

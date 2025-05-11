@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../includes.php';
-require_once __DIR__ . '/../backend/auth.php';
 
 try {
 
@@ -9,7 +8,7 @@ try {
     $profile = idetifyUser();
 
     $movie_id = json_decode(file_get_contents("php://input"), true);
-    if(!$movie_id || !is_string($movie_id)) {
+    if(!$movie_id || !is_int($movie_id)) {
         sendMessage("no movie id specified", 400);
         exit;
     }

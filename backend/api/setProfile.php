@@ -1,14 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../includes.php';
-require_once __DIR__ . '/../backend/auth.php';
 
 try {
     validateRequest();
     $user = idetifyUser(false);
 
     $profile_id = json_decode(file_get_contents("php://input"), true);
-    if(!$profile_id || !is_string($profile_id)) {
+    if(!$profile_id || !is_int($profile_id)) {
         sendMessage('no profile id specified', 400);
         exit;
     }

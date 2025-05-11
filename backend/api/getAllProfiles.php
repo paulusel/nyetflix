@@ -1,13 +1,13 @@
 <?php
 
-require_once "../includes.php";
+require_once __DIR__ . "/../includes.php";
 
 try {
-    validateRequest();
+    validateRequest(false);
     $user = idetifyUser(false);
 
     $profiles = Backend::getUserProfiles($user["user_id"]);
-    sendJson(['ok' => true, 'items' => $profiles]);
+    sendJson(['ok' => true, 'profiles' => $profiles]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());

@@ -2,7 +2,7 @@
 
 require_once "backend/backend.php";
 
-function idetifyUser(bool $require_profile = true) : array {
+function idetifyUser(bool $check_profile = true) : array {
     require_once "../backend/auth.php";
 
     $headers = getallheaders();
@@ -12,22 +12,26 @@ function idetifyUser(bool $require_profile = true) : array {
     $token = trim($token);
 
     $user = Auth::validate($token);
-    if(require_profile) {
+    $user['user'] = Backend::getUser($user['user_id']);
+
+    if($check_profile) {
         if(isset($user['profile_id'])) {
-            return Backend::getProfile($user['profile_id']);
+            $user['profile'] = Backend::getProfile($user['profile_id']);
         }
-        throw new BackendException('profile is not set. create or set one before making this request');
+        else {
+            throw new BackendException('profile is not set. create or set one before making this request', 400);
+        }
     }
 
-    return Backend::getUser($user['user_id']);
+    return $user;
 }
 
-function validateRequest() : void {
+function validateRequest(bool $validate_body = true) : void {
     if( $_SERVER["REQUEST_METHOD"] !== "POST") {
         throw new BackendException("request method not supported", 400);
     }
 
-    if($_SERVER["CONTENT_TYPE"] !== "application/json") {
+    if($validate_body && $_SERVER["CONTENT_TYPE"] !== "application/json") {
         throw new BackendException("expected json body", 400);
     }
 }

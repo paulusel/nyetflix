@@ -17,7 +17,7 @@ class Backend {
 
     public static function getMovieDetail(string $movie_id) : array{
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, title, description, thumbnail, type FROM movies WHERE movie_id = ?");
+        $stmnt = $db->prepare("SELECT movie_id, title, description, type FROM movies WHERE movie_id = ?");
         $stmnt->execute([$movie_id]);
         $movie = $stmnt->fetch();
         if(!$movie) {
@@ -202,10 +202,10 @@ class Backend {
         $stmnt->execute([$user_id]);
     }
 
-    public static function deleteProfile(int $profile_id) : void {
+    public static function deleteProfile(int $user_id, int $profile_id) : void {
         $db = self::connection();
-        $stmnt = $db->prepare("DELETE FROM profile WHERE profile_id = ?");
-        $stmnt->execute([$profile_id]);
+        $stmnt = $db->prepare("DELETE FROM profiles WHERE user_id = ? AND profile_id = ?");
+        $stmnt->execute([$user_id, $profile_id]);
         if(0 === $stmnt->rowCount()) {
             throw new BackendException('profile not found', 404);
         }
@@ -213,9 +213,9 @@ class Backend {
 
     public static function listItems(int $profile_id) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, thumbnail, type FROM lists JOIN "
-            . " movies ON lists.movi_ed = movies.movie_id WHERE profile_id = ?");
-        $stmnt->execute([profile_id]);
+        $stmnt = $db->prepare("SELECT movies.movie_id, type FROM lists JOIN "
+            . " movies ON lists.movie_id = movies.movie_id WHERE profile_id = ?");
+        $stmnt->execute([$profile_id]);
         return $stmnt->fetchAll();
     }
 
@@ -227,7 +227,7 @@ class Backend {
 
     public static function removeFromList(int $profile_id, int $movie_id) : void {
         $db = self::connection();
-        $stmnt = $db->prepare("DELETE FROM lists WHERE profile_id = ? AND movie_id = ?)");
+        $stmnt = $db->prepare("DELETE FROM lists WHERE profile_id = ? AND movie_id = ?");
         $stmnt->execute([$profile_id, $movie_id]);
     }
 
@@ -262,7 +262,7 @@ class Backend {
 
     public static function getFilmsSeries(int $type) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, thumbnail, type FROM movies WHERE type = ?");
+        $stmnt = $db->prepare("SELECT movie_id, type FROM movies WHERE type = ?");
         $stmnt->execute([$type]);
         return $stmnt->fetchAll();
     }
@@ -279,7 +279,7 @@ class Backend {
 
     public static function getSeasonById(int $movie_id, int $season_id) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT episode_no, movie_id, title, description, thumbnail, type " .
+        $stmnt = $db->prepare("SELECT episode_no, movie_id, title, description, type " .
             " FROM episodes JOIN movies ON episodes.movie_id = movies.movie_id WHERE season_id = ? AND movie_id = ?");
         $stmnt->execute([$season_id, $movie_id]);
         return $stmnt->fetchAll();
@@ -287,7 +287,7 @@ class Backend {
 
     public static function getGenreMovies(string $genre) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, thumbnail, type FROM movies JOIN movie_genres " .
+        $stmnt = $db->prepare("SELECT movie_id, type FROM movies JOIN movie_genres " .
             " ON movies.movie_id = movie_genres.movie_id WHERE genre = ?");
         $stmnt->execute([$genre]);
         return $stmnt->fetchAll();
@@ -295,7 +295,7 @@ class Backend {
 
     public static function getHistory(int $profile_id) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, thumbnail, type FROM movies JOIN history " .
+        $stmnt = $db->prepare("SELECT movie_id, type FROM movies JOIN history " .
                 " ON movie.movie_id = history.movie_id WHERE profile_id = ?");
         $stmnt->execute([$profile_id]);
         return $stmnt->fetchAll();
@@ -303,7 +303,7 @@ class Backend {
 
     public static function getRecents() : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, thumbnail, type FROM movies WHERE type IN (1, 2)" . 
+        $stmnt = $db->prepare("SELECT movie_id, type FROM movies WHERE type IN (1, 2)" . 
             "ORDER BY added DESC LIMIT 100");
         $stmnt->execute([]);
         return $stmnt->fetchAll();

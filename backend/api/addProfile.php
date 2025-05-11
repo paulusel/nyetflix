@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../includes.php';
-require_once __DIR__ . '/../backend/auth.php';
 
 try {
     validateRequest();
@@ -13,6 +12,7 @@ try {
         exit;
     }
 
+    $profile['user_id'] = $user['user_id'];
     $profile = Backend::addProfile($profile);
     sendJson(['ok' => true, 'profile' => $profile]);
 }

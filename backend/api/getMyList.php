@@ -1,12 +1,12 @@
 <?php
 
-require_once "../includes.php";
+require_once __DIR__ . "/../includes.php";
 
 try {
-    validateRequest();
+    validateRequest(false);
     $profile = idetifyUser();
 
-    $items = Backend::listItems($profile['user_id']);
+    $items = Backend::listItems($profile['profile_id']);
     sendJson(['ok' => true, 'items' => $items]);
 }
 catch(BackendException $e) {

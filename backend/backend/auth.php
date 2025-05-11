@@ -6,11 +6,11 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class Auth {
-    private static string $priva_key_file = __DIR__ . '/private.key';
+    private static string $private_key_file = __DIR__ . '/private.key';
     private static string $public_key_file = __DIR__ . '/public.key';
 
     public static function newToken(array $user) : string {
-        static $priv_key = file_get_contents(self::$priva_key_file);
+        static $private_key = file_get_contents(self::$private_key_file);
         $payload = [
             'iat' => time(),
             'exp' => time() + 2592000,
@@ -21,7 +21,7 @@ class Auth {
             $payload['profile'] = $user['profile_id'];
         }
 
-        return JWT::encode($payload, $priv_key, 'RS256');
+        return JWT::encode($payload, $private_key, 'RS256');
     }
 
     public static function validate(string $token) : array {
@@ -36,7 +36,7 @@ class Auth {
 
             return $user;
         }
-        catch(UnexpectedValueException $e) {
+        catch(UnexpectedValueException | DomainException $e) {
             throw new BackendException('invalid authorization token', 401);
         }
     }
