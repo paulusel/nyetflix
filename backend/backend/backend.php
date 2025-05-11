@@ -295,8 +295,8 @@ class Backend {
 
     public static function getHistory(int $profile_id) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, type FROM movies JOIN history " .
-                " ON movie.movie_id = history.movie_id WHERE profile_id = ?");
+        $stmnt = $db->prepare("SELECT movies.movie_id, type FROM movies JOIN history " .
+                " ON movies.movie_id = history.movie_id WHERE profile_id = ?");
         $stmnt->execute([$profile_id]);
         return $stmnt->fetchAll();
     }
