@@ -274,14 +274,18 @@ class Backend {
         $stmnt->execute([$movie_id, $season_no]);
         $season = $stmnt->fetch();
 
-        return self::getSeasonById($movie_id, $season['season_id']);
+        if(!$season) {
+            throw new BackendException('season not found', 404);
+        }
+
+        return self::getSeasonById($season['season_id']);
     }
 
-    public static function getSeasonById(int $movie_id, int $season_id) : array {
+    public static function getSeasonById(int $season_id) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT episode_no, movie_id, title, description, type " .
-            " FROM episodes JOIN movies ON episodes.movie_id = movies.movie_id WHERE season_id = ? AND movie_id = ?");
-        $stmnt->execute([$season_id, $movie_id]);
+        $stmnt = $db->prepare("SELECT episode_no, movies.movie_id, title, description, type " .
+            " FROM episodes JOIN movies ON episodes.movie_id = movies.movie_id WHERE season_id = ?");
+        $stmnt->execute([$season_id]);
         return $stmnt->fetchAll();
     }
 

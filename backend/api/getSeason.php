@@ -11,7 +11,7 @@ try {
         sendMessage("season is not specifified", 400);
         exit;
     }
-    $season = Backend::getSeasonByNumber($season['movie_id'], $season['season_no']);
+    $season = Backend::getSeasonByNumber($season_info['movie_id'], $season_info['season_no']);
     sendJson(['ok' => true, 'seasons' => $season]);
 }
 catch(BackendException $e) {
