@@ -287,7 +287,7 @@ class Backend {
 
     public static function getGenreMovies(string $genre) : array {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT movie_id, type FROM movies JOIN movie_genres " .
+        $stmnt = $db->prepare("SELECT movies.movie_id, type FROM movies JOIN movie_genres " .
             " ON movies.movie_id = movie_genres.movie_id WHERE genre = ?");
         $stmnt->execute([$genre]);
         return $stmnt->fetchAll();
