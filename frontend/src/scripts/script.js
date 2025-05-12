@@ -1,3 +1,5 @@
+import MovieManager from './movieManager.js';
+
 const nav = document.querySelector('nav');
 
 window.addEventListener('scroll', () => {
@@ -24,4 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileIcon = document.querySelector('.nav-item.icon img');
     profileIcon.src = `../assets/images/Icon/Profile/${selectedProfile}.png`;
   }
+  
+  MovieManager.init();
 });
