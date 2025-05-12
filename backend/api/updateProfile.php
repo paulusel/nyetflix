@@ -9,11 +9,11 @@ try {
     $profile = json_decode(file_get_contents("php://input"), true);
 
     if(!$profile || !is_array($profile)) {
-        sendMessage("no user data found in the request body");
+        sendMessage("no profile data found", 400);
         exit;
     }
 
-    Backend::updateProfile($profile['profile_id'], $profile);
+    Backend::updateProfile($user['user_id'], $profile);
     sendJson(["ok" => true]);
 }
 catch(BackendException $e) {

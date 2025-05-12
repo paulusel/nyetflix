@@ -158,7 +158,7 @@ class Backend {
      * @param array $profile data to replace existing user information
      * @param int $profile_id whose information is to be updated
      */
-    public static function updateProfile(array $profile) : void {
+    public static function updateProfile(int $user_id, array $profile) : void {
         $updates = [];
         $values = [];
 
@@ -166,7 +166,7 @@ class Backend {
 
         if(isset($profile['name'])) {
             $updates[] = ' name = ? ';
-            $values = $profile['name'];
+            $values[] = $profile['name'];
         }
 
         if(isset($profile['picture'])) {
@@ -174,13 +174,16 @@ class Backend {
             $values[] = $profile['picture'];
         }
 
-        if(empty($updates)) {
-            throw new BackendException("empty update", 400);
+        if(empty($updates) || !isset($profile['profile_id'])) {
+            throw new BackendException("required fields missing or update is empty", 400);
         }
 
         $values[] = $profile['profile_id'];
-        $stmnt = $db->prepare( "UPDATE profiles SET " . implode(", ", $updates) . " WHERE profile_id = ?");
+        $values[] = $user_id;
+
+        $stmnt = $db->prepare( "UPDATE profiles SET " . implode(", ", $updates) . " WHERE profile_id = ? AND user_id = ?");
         $stmnt->execute($values);
+
         if(0 === $stmnt->rowCount()) {
             throw new BackendException('profile not found', 404);
         }
@@ -229,6 +232,9 @@ class Backend {
         $db = self::connection();
         $stmnt = $db->prepare("DELETE FROM lists WHERE profile_id = ? AND movie_id = ?");
         $stmnt->execute([$profile_id, $movie_id]);
+        if(0 === $stmnt->rowCount()) {
+            throw new BackendException('movie not found in the list', 404);
+        }
     }
 
     public function verifyUser(string $username, string $password) : array {
