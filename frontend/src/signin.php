@@ -13,7 +13,7 @@
     </nav>
     <div class="form-wrapper">
         <h2>Sign In</h2>
-            <form action="./webpages/profile.html">
+            <form action="profile.php">
             <div class="form-control">
                 <input type="text" required>
                 <label>Email or phone number</label>
@@ -31,7 +31,7 @@
                 <a href="#">Need help?</a>
             </div>
         </form>
-        <p>New to Netflix? <a href="./webpages/signup.html">Sign up now</a></p>
+        <p>New to Netflix? <a href="signup.php">Sign up now</a></p>
         <small>
             This page is protected by Google reCAPTCHA to ensure you're not a bot. 
             <a href="#">Learn more.</a>

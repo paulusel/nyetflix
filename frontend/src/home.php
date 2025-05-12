@@ -434,7 +434,7 @@
             </div>
       </footer>
 
-      <script src="./scripts/script.js"></script>
+      <script type="module" src="./scripts/script.js"></script>
       <script src="https://unpkg.com/feather-icons"></script>
       <script>
         feather.replace();

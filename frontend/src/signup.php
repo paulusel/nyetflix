@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix - Watch TV Shows Online, Watch Movies Online</title>
     <link href="../assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
-    <link rel="stylesheet" href="./styles/signup.css">
+    <link rel="stylesheet" href="styles/signup.css">
 </head>
 <body>
     <div class="dark-overlay">
@@ -29,7 +29,7 @@
             </form>
 
             <div class="help-text">
-                <p>Already have an account? <a href="../signin.html">Sign in now</a>.</p>
+                <p>Already have an account? <a href="signin.php">Sign in now</a>.</p>
                 <p style="margin-top: 10px;">
                     This page is protected by Google reCAPTCHA to ensure you're not a bot. 
                     <a href="#">Learn more</a>.
