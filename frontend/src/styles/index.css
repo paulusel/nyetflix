@@ -37,9 +37,17 @@ a {
   text-decoration: none;
   color: white;
   font-size: 0.8vw;
+  display: inline-block;
 }
 
-a:hover {
+/* Clear the hover underline for navigation items */
+.nav-items a:hover,
+a.nav-items:hover {
+  text-decoration: none;
+}
+
+/* Footer links should still get underline on hover */
+.footer-link:hover {
   text-decoration: underline;
 }
 
