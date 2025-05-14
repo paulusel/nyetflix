@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 25, 2025 at 01:15 PM
+-- Generation Time: May 10, 2025 at 11:48 PM
 -- Server version: 11.7.2-MariaDB
 -- PHP Version: 8.4.6
 
@@ -30,7 +30,20 @@ SET time_zone = "+00:00";
 CREATE TABLE `episodes` (
   `season_id` int(11) NOT NULL,
   `episode_no` smallint(6) NOT NULL,
-  `movie_id` int(11) NOT NULL
+  `movie_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `history`
+--
+
+CREATE TABLE `history` (
+  `profile_id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
+  `position` int(11) DEFAULT 0,
+  `visited` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -40,20 +53,8 @@ CREATE TABLE `episodes` (
 --
 
 CREATE TABLE `lists` (
-  `list_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `title` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `list_movies`
---
-
-CREATE TABLE `list_movies` (
-  `list_id` int(11) NOT NULL,
-  `movie_id` int(11) NOT NULL
+  `movie_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -67,18 +68,8 @@ CREATE TABLE `movies` (
   `title` varchar(20) NOT NULL,
   `description` varchar(100) NOT NULL,
   `thunmbnail` varchar(20) NOT NULL,
-  `video` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `movie_categories`
---
-
-CREATE TABLE `movie_categories` (
-  `movie_id` int(11) NOT NULL,
-  `category` varchar(10) NOT NULL
+  `added` timestamp NOT NULL DEFAULT current_timestamp(),
+  `type` smallint(6) NOT NULL CHECK (`type` in (1,2,3))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -106,15 +97,26 @@ CREATE TABLE `movie_tags` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `profiles`
+--
+
+CREATE TABLE `profiles` (
+  `profile_id` int(11) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `picture` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `seasons`
 --
 
 CREATE TABLE `seasons` (
   `season_id` int(11) NOT NULL,
   `movie_id` int(11) NOT NULL,
-  `season_no` smallint(6) NOT NULL,
-  `title` varchar(20) NOT NULL,
-  `description` varchar(100) NOT NULL
+  `season_no` smallint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -126,8 +128,25 @@ CREATE TABLE `seasons` (
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `username` varchar(20) DEFAULT NULL,
-  `password` varchar(50) NOT NULL
+  `password` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `password`) VALUES
+(1, 'paulus', 'paulus'),
+(2, 'usernameuser', 'pass'),
+(3, 'usernameu', 'pass'),
+(4, 'usernamedau', 'pass'),
+(5, 'usernamedadkdu', 'pass'),
+(6, 'usernameddkdu', 'pass'),
+(7, 'usernamedckvdkdu', 'pass'),
+(8, 'usernackvdkdu', 'pass'),
+(9, 'userckvdkdu', 'pass'),
+(10, 'usesmjdkvdkdu', 'pass'),
+(13, 'yonas', '$2y$12$9QJyorylgaGua.IpTaV3jeYimv.IF2bIYM.P.6MpaKmSrmIMq2BPW');
 
 --
 -- Indexes for dumped tables
@@ -138,34 +157,27 @@ CREATE TABLE `users` (
 --
 ALTER TABLE `episodes`
   ADD PRIMARY KEY (`season_id`,`episode_no`),
-  ADD UNIQUE KEY `season_id` (`season_id`,`movie_id`),
+  ADD UNIQUE KEY `movie_id` (`movie_id`);
+
+--
+-- Indexes for table `history`
+--
+ALTER TABLE `history`
+  ADD PRIMARY KEY (`profile_id`,`movie_id`),
   ADD KEY `movie_id` (`movie_id`);
 
 --
 -- Indexes for table `lists`
 --
 ALTER TABLE `lists`
-  ADD PRIMARY KEY (`list_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`,`title`);
-
---
--- Indexes for table `list_movies`
---
-ALTER TABLE `list_movies`
-  ADD PRIMARY KEY (`list_id`,`movie_id`),
-  ADD KEY `movie_id` (`movie_id`);
+  ADD PRIMARY KEY (`movie_id`,`profile_id`),
+  ADD KEY `profile_id` (`profile_id`);
 
 --
 -- Indexes for table `movies`
 --
 ALTER TABLE `movies`
   ADD PRIMARY KEY (`movie_id`);
-
---
--- Indexes for table `movie_categories`
---
-ALTER TABLE `movie_categories`
-  ADD PRIMARY KEY (`movie_id`,`category`);
 
 --
 -- Indexes for table `movie_genres`
@@ -178,6 +190,13 @@ ALTER TABLE `movie_genres`
 --
 ALTER TABLE `movie_tags`
   ADD PRIMARY KEY (`movie_id`,`tag`);
+
+--
+-- Indexes for table `profiles`
+--
+ALTER TABLE `profiles`
+  ADD PRIMARY KEY (`profile_id`),
+  ADD UNIQUE KEY `user_id` (`user_id`,`name`);
 
 --
 -- Indexes for table `seasons`
@@ -198,16 +217,16 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `lists`
---
-ALTER TABLE `lists`
-  MODIFY `list_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `movies`
 --
 ALTER TABLE `movies`
   MODIFY `movie_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `profiles`
+--
+ALTER TABLE `profiles`
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `seasons`
@@ -219,7 +238,7 @@ ALTER TABLE `seasons`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables
@@ -233,23 +252,18 @@ ALTER TABLE `episodes`
   ADD CONSTRAINT `episodes_ibfk_2` FOREIGN KEY (`season_id`) REFERENCES `seasons` (`season_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `history`
+--
+ALTER TABLE `history`
+  ADD CONSTRAINT `history_ibfk_1` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`profile_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `history_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `lists`
 --
 ALTER TABLE `lists`
-  ADD CONSTRAINT `lists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `list_movies`
---
-ALTER TABLE `list_movies`
-  ADD CONSTRAINT `list_movies_ibfk_1` FOREIGN KEY (`list_id`) REFERENCES `lists` (`list_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `list_movies_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`);
-
---
--- Constraints for table `movie_categories`
---
-ALTER TABLE `movie_categories`
-  ADD CONSTRAINT `movie_categories_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `lists_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `lists_ibfk_2` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`profile_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `movie_genres`
@@ -262,6 +276,12 @@ ALTER TABLE `movie_genres`
 --
 ALTER TABLE `movie_tags`
   ADD CONSTRAINT `movie_tags_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `profiles`
+--
+ALTER TABLE `profiles`
+  ADD CONSTRAINT `profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `seasons`

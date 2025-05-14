@@ -1,9 +1,9 @@
 <?php
 
-require_once "../backend/backend.php";
-require_once "../helpers.php";
+require_once __DIR__ . '/../includes.php';
 
 try {
+    validateRequest();
     $username = json_decode(file_get_contents("php://input"), true);
 
     if(!$username || !is_string($username)) {
@@ -19,6 +19,6 @@ catch(BackendException $e) {
 }
 catch(Throwable $e){
     require '../logger.php';
-    Logger::log($e->getMessage);
+    Logger::log($e->getMessage());
     sendMessage("internal server error", 500);
 }
