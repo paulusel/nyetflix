@@ -15,7 +15,7 @@
 
         <div class="signup-container">
             <h1>Sign Up</h1>
-            <form action="./profile.html">
+            <form id="signup-form" onsubmit="signup()">
                 <div id="name" class="form-group">
                     <input type="text" placeholder="Name" required>
                 </div>
@@ -51,5 +51,6 @@
             </div>
         </div>
     </div>
+    <script src="scripts/signup.js"></script>
 </body>
 </html>
