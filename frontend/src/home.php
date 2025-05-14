@@ -19,39 +19,41 @@
     />
   </head>
     <body>
-        <nav>
-            <div class="left">
-          <img src="../assets/images/Icon/logo.png" class="brand" />
-          <div class="nav-item small">Browse</div>
-          <ul class="nav-items">
-            <a href="#" class = "nav-items"><li class="nav-item">Home</li></a>
-            <a href="TvSeries.php" class = "nav-items"><li class="nav-item">TV Shows</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">Movies</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">Latest</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">My List</li></a>
-            <a href="#" class = "nav-items"><li class="nav-item">Browse by Languages</li></a>
-          </ul>
-            </div>
-        <div class="right">
-          <ul class="nav-icons">
-            <div class="nav-item icon">
-              <i data-feather="search"></i>
-            </div>
-            <div class="nav-item icon">
-              <i data-feather="bell"></i>
-            </div>
-            <div class="nav-item icon">
-              <!-- src is handled by javascript -->
-              <img
-                alt="profile icon"
-              />
-              <i class="hide" data-feather="chevron-down"></i>
-            </div>
-          </ul>
-        </div>
-        </nav>
+        <header>
+            <nav>
+                <div class="left">
+                    <img src="../assets/images/Icon/logo.png" class="brand" />
+                    <div class="nav-item small">Browse</div>
+                    <ul class="nav-items">
+                        <a href="home.php" class = "nav-items"><li class="nav-item">Home</li></a>
+                        <a href="TvSeries.php" class = "nav-items"><li class="nav-item">TV Shows</li></a>
+                        <a href="#" class = "nav-items"><li class="nav-item">Movies</li></a>
+                        <a href="#" class = "nav-items"><li class="nav-item">Latest</li></a>
+                        <a href="#" class = "nav-items"><li class="nav-item">My List</li></a>
+                        <a href="#" class = "nav-items"><li class="nav-item">Browse by Languages</li></a>
+                    </ul>
+                </div>
+                <div class="right">
+                    <ul class="nav-icons">
+                        <div class="nav-item icon">
+                            <i data-feather="search"></i>
+                        </div>
+                        <div class="nav-item icon">
+                            <i data-feather="bell"></i>
+                        </div>
+                        <div class="nav-item icon">
+                            <!-- src is handled by javascript -->
+                            <img
+                            alt="profile icon"
+                            />
+                            <i class="hide" data-feather="chevron-down"></i>
+                        </div>
+                    </ul>
+                </div>
+            </nav>
+        </header>
 
-      <main>
+        <main>
           <div class="top">
             <img
               src="../assets/images/Main/Top/The Grey Man.jpg"
