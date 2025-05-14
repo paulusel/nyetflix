@@ -86,9 +86,45 @@
             <div class="title">Get In on the Action</div>
             <div class="slider">
               <div class="content">
-                <img class = "item"
-                  src="../assets/images/Main/Body/Row1/Prison-Break.jpg"
-                />
+                <div class="wrapper__front">
+                  <img src="../assets/images/Main/Body/Row1/Prison-Break.jpg" alt="Prison Break" />
+                </div>
+                <div class="wrapper__back">
+                  <div class="card__header">
+                    <img src="../assets/images/Main/Body/Row1/Prison-Break.jpg" alt="Prison Break" />
+                  </div>
+                  <div class="card__body">
+                    <div class="flex justify-between items-center">
+                      <div>
+                        <button class="btn btn--transparent btn--circle">
+                          <svg class="card__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path d="M21.44 10.72L5.96 2.98A1.38 1.38 0 004 4.213v15.474a1.373 1.373 0 002 1.233l15.44-7.74a1.38 1.38 0 000-2.467v.007z" />
+                          </svg>
+                        </button>
+                        <button class="btn btn--transparent btn--circle">
+                          <svg class="card__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path d="M12 0a1.5 1.5 0 011.5 1.5v9h9a1.5 1.5 0 110 3h-9v9a1.5 1.5 0 11-3 0v-9h-9a1.5 1.5 0 110-3h9v-9A1.5 1.5 0 0112 0z" />
+                          </svg>
+                        </button>
+                      </div>
+                      <button class="btn btn--transparent btn--circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="card__icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                          <path fill-rule="evenodd" d="M2.469 6.969a.75.75 0 011.062 0L12 15.439l8.469-8.47a.75.75 0 111.062 1.062l-9 9a.75.75 0 01-1.062 0l-9-9a.75.75 0 010-1.062z" clip-rule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p class="card__title text">
+                      <span class="text--bold">S1:E1</span>
+                      Prison Break
+                    </p>
+                    <div class="card__progress flex justify-between items-center">
+                      <div class="progressbar">
+                        <div class="progressbar__status"></div>
+                      </div>
+                      <span class="text text--bold text--muted">51 of 52m</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="content">
                 <img class = "item"
