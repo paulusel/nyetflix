@@ -2,57 +2,183 @@
   margin: 3vw 0;
   padding: 0 4%;
   gap: 0.5vw;
+  position: relative;
 }
 
 .content {
   width: 16vw;
   display: inline-block;
   margin-right: 10px;
+  position: relative;
+  transition: transform 300ms ease-out;
+  z-index: 1;
 }
 
 .content img {
   max-width: 100%;
   cursor: pointer;
+  border-radius: 4px;
 }
 
-
-.item {
-  position: relative;
-  display: block;
-  flex: 1 1 0px;
-  transition: transform 500ms;
+.content:hover {
+  transform: scale(1.5);
+  z-index: 99;
 }
 
-/* TODO - starter for hover effect, there still more needs to be done */
-
-.content:focus-within .item,
-.content:hover .item {
-  transform: translateX(-25%);
-}
-
-.item:focus ~ .item,
-.item:hover ~ .item {
+/* Hover effect for items before and after the hovered item */
+.content:hover ~ .content {
   transform: translateX(25%);
 }
 
-.content .item:focus,
-.content .item:hover {
-  transform: scale(1.5);
-  z-index: 1;
+.content:not(:hover) {
+  transform: translateX(0);
 }
 
+/* Additional styling for expanded content on hover */
+.content-details {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #141414;
+  border-radius: 0 0 4px 4px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
 
-.item img {
+.content:hover .content-details {
   display: block;
-  max-width: 100%;
+}
+
+/* Button styles */
+.btn {
+  padding: 0.5rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 250ms;
+  background: transparent;
+}
+
+.btn--transparent {
+  background: transparent;
+}
+
+.btn--circle {
+  border-radius: 50%;
+}
+
+.btn:hover {
+  background: white;
+}
+
+.btn:hover .card__icon {
+  fill: #141414;
+}
+
+/* Card icon styles */
+.card__icon {
+  width: 0.6rem;
+  height: 0.6rem;
+  fill: white;
+  transition: fill 250ms;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .card__icon {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card__icon {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+/* Content info styles */
+.card__title {
+  color: white;
+  margin-top: 1.25rem;
+}
+
+.card__progress {
+  margin-top: 1rem;
+  gap: 0.75rem;
+}
+
+/* Progress bar styles */
+.progressbar {
+  flex: 1;
+  height: 0.15rem;
+  border-radius: 5px;
+  background: grey;
+  overflow: hidden;
+}
+
+.progressbar__status {
+  width: 98%;
+  height: 100%;
+  background: rgb(229, 9, 20);
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+/* Text styles */
+.text {
+  font-size: 0.6rem;
+}
+
+.text--bold {
+  font-weight: 700;
+  margin-right: 0.3rem;
+}
+
+.text--muted {
+  color: grey;
+}
+
+.text--white {
+  color: white;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .text {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text {
+    font-size: 1rem;
+  }
 }
 
 .slider {
-  overflow-x: scroll;
+  overflow-x: visible;
   white-space: nowrap;
   display: inline-block;
+  position: relative;
 }
 
+/* Loading and error states */
 .loading-indicator {
     display: flex;
     justify-content: center;
@@ -77,9 +203,27 @@
     border-radius: 4px;
 }
 
+/* Responsive adjustments */
 @media (max-width: 800px) {
   .content {
     width: 50%;
     margin-right: 0;
+  }
+  
+  .content:hover {
+    transform: scale(1.2);
+  }
+  
+  .content-details {
+    padding: 0.5rem;
+  }
+  
+  .btn {
+    padding: 0.3rem;
+  }
+  
+  .card__icon {
+    width: 0.5rem;
+    height: 0.5rem;
   }
 }
