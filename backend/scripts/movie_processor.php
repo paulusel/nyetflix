@@ -1,6 +1,5 @@
 <?php
 
-// Check command line arguments
 if ($argc < 2) {
     die("Usage: php hls_processor.php <input_directory> [output_directory]\n");
 }
@@ -153,7 +152,6 @@ class DirectoryProcessor {
     private function processSeries(string $input_path) : bool {
         echo "Processing series: $input_path\n";
 
-        // Use folder name as title, description can be empty
         $title = basename($input_path);
         $description = "Default description";
 
@@ -320,7 +318,6 @@ class DirectoryProcessor {
             return $this->handleError("Video file not found: $videoPath");
         }
 
-        // Single FFmpeg command for 720p stream
         $cmd = sprintf(
             '%s -i "%s" ' .
             '-c:v libx264 -crf 23 -preset veryfast -profile:v main -level 3.1 -vf "scale=-2:720" ' .
@@ -340,7 +337,6 @@ class DirectoryProcessor {
             return $this->handleError("FFmpeg error: " . implode("\n", $output));
         }
 
-        // Verify that the output files were created
         if (!file_exists("$outputDir/playlist.m3u8")) {
             return $this->handleError("Failed to create HLS playlist");
         }
