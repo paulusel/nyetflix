@@ -15,19 +15,18 @@
 
         <div class="signup-container">
             <h1>Sign Up</h1>
-            <form id="signup-form" onsubmit="signup()">
-                <div id="name" class="form-group">
-                    <input type="text" placeholder="Name" required>
+            <form id="signup-form" onsubmit="event.preventDefault(); signup();">
+                <div class="form-group">
+                    <input type="text" id="name-input" placeholder="Name" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" placeholder="Email" required>
+                    <input type="email" id="email-input" placeholder="Email" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Password" required>
+                    <input type="password" id="password-input" placeholder="Password" required>
                 </div>
                 <button type="submit">Sign Up</button>
             </form>
-
             <div class="help-text">
                 <p>Already have an account? <a href="signin.php">Sign in now</a>.</p>
                 <p style="margin-top: 10px;">
