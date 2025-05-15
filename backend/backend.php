@@ -46,7 +46,7 @@ class Backend {
         try {
             $db = self::connection();
             $password_hash = password_hash($user['password'], PASSWORD_DEFAULT);
-            $stmnt = $db->prepare('INSERT into users (email, password, name) VALUES (?, ?, ?)');
+            $stmnt = $db->prepare('INSERT INTO users (email, password, name) VALUES (?, ?, ?)');
             $stmnt->execute([$user['email'], $password_hash, $user['name']]);
             unset($user['password']);
 
@@ -54,6 +54,10 @@ class Backend {
             $stmnt = $db->prepare("SELECT LAST_INSERT_ID() AS id");
             $stmnt->execute();
             $user["user_id"] = $stmnt->fetch()["id"];
+
+
+            $stmnt = $db->prepare("INSERT INTO profiles (user_id, name) VALUES (?, ?)");
+            $stmnt->execute([$user['user_id'], $user['name']]);
 
             return $user;
         }
