@@ -3,3 +3,5 @@ backend/backend/private.key
 backend/backend/public.key
 .DS_Store
 backend/data/logs/backend.log
+backend/keys/public_key.pem
+backend/keys/private_key.pem

@@ -6,8 +6,8 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class Auth {
-    private static string $private_key_file = __DIR__ . '/keys/private.key';
-    private static string $public_key_file = __DIR__ . '/keys/public.key';
+    private static string $private_key_file = __DIR__ . '/keys/private_key.pem';
+    private static string $public_key_file = __DIR__ . '/keys/public_key.pem';
 
     public static function newToken(array $user) : string {
         static $private_key = file_get_contents(self::$private_key_file);
