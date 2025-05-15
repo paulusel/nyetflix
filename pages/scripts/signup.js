@@ -29,9 +29,35 @@ async function signup() {
         }
 
         localStorage.setItem('token', result.token);
-        window.location.href = 'profile.php';
+        if(setProfile()) {
+            window.location.href = 'home.php';
+        }
+        else {
+            console.log('failed to set profile');
+        }
     } catch (error) {
         console.error('server response error:');
         return;
     }
+}
+
+async function setProfile() {
+    const response = await fetch('/nyetflix/api/getAllProfiles.php', {
+        method : 'POST'
+    });
+    const json = await response.json();
+    response = await fetch('/nyetflix/api/setProfile.php', {
+        method : 'POST',
+        headers : {
+            'Content-Type' : 'application/json',
+            'Authorization' : 'Bearer ' + localStorage.getItem('token')
+        },
+        body : JSON.stringify(json.profiles[0].profile_id)
+    });
+    json = await response.json();
+    if(json.ok) {
+        localStorage.setItem('token', json.token);
+    }
+
+    return json.ok;
 }

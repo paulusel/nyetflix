@@ -13,13 +13,13 @@
     </nav>
     <div class="form-wrapper">
         <h2>Sign In</h2>
-            <form action="profile.php">
+            <form id="signin-form" onsubmit="event.preventDefault(); signin();">
             <div class="form-control">
-                <input type="text" required>
+                <input id="email-input" type="text" required>
                 <label>Email or phone number</label>
             </div>
             <div class="form-control">
-                <input type="password" required>
+                <input id="password-input" type="password" required>
                 <label>Password</label>
             </div>
                 <button type="submit">Sign In</button>
@@ -37,5 +37,6 @@
             <a href="#">Learn more.</a>
         </small>
     </div>
+    <script src="scripts/signin.js"></script>
 </body>
 </html>
