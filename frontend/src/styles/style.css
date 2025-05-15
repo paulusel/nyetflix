@@ -119,15 +119,49 @@ a {
 .manage-button:hover {
     border:1px solid #fff;
     color:#fff
-  }
+}
+
+.image-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.edit-icon {
+    color: #fff;
+    font-size: 24px;
+    stroke-width: 2;
+}
+
+.edit-mode .profile-name {
+    color: #fff;
+}
+
+.edit-mode .user-profile {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.edit-mode .user-profile:hover {
+    opacity: 0.8;
+}
   
 @media screen and (min-width:1666px) {
     .container .profile-name {
       font-size:24px;
     }
-  }
+    .edit-icon {
+        font-size: 32px;
+    }
+}
 @media screen and (max-width:800px) {
     .container .profile-name {
       font-size:12px
     }
-  }
+    .edit-icon {
+        font-size: 18px;
+    }
+}
