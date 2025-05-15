@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link href="./assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
-    <link rel="stylesheet" href="./styles/login.css">
+    <link href="assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="styles/login.css">
 </head>
 <body>
     <nav>
-        <a href="#"><img src="./assets/images/Icon/logo.png" alt="logo"></a>
+        <a href="#"><img src="assets/images/Icon/logo.png" alt="logo"></a>
     </nav>
     <div class="form-wrapper">
         <h2>Sign In</h2>

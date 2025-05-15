@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix - Watch TV Shows Online, Watch Movies Online</title>
-    <link href="../assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
+    <link href="assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" href="styles/signup.css">
 </head>
 <body>
     <div class="dark-overlay">
         <header class="header">
-            <img src="../assets/images/Icon/logo.png" alt="Netflix" class="logo">
+            <img src="assets/images/Icon/logo.png" alt="Netflix" class="logo">
         </header>
 
         <div class="signup-container">
