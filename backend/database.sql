@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 10, 2025 at 11:48 PM
+-- Generation Time: May 15, 2025 at 01:06 PM
 -- Server version: 11.7.2-MariaDB
 -- PHP Version: 8.4.6
 
@@ -67,7 +67,6 @@ CREATE TABLE `movies` (
   `movie_id` int(11) NOT NULL,
   `title` varchar(20) NOT NULL,
   `description` varchar(100) NOT NULL,
-  `thunmbnail` varchar(20) NOT NULL,
   `added` timestamp NOT NULL DEFAULT current_timestamp(),
   `type` smallint(6) NOT NULL CHECK (`type` in (1,2,3))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -127,26 +126,17 @@ CREATE TABLE `seasons` (
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
-  `username` varchar(20) DEFAULT NULL,
-  `password` varchar(100) DEFAULT NULL
+  `name` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password`) VALUES
-(1, 'paulus', 'paulus'),
-(2, 'usernameuser', 'pass'),
-(3, 'usernameu', 'pass'),
-(4, 'usernamedau', 'pass'),
-(5, 'usernamedadkdu', 'pass'),
-(6, 'usernameddkdu', 'pass'),
-(7, 'usernamedckvdkdu', 'pass'),
-(8, 'usernackvdkdu', 'pass'),
-(9, 'userckvdkdu', 'pass'),
-(10, 'usesmjdkvdkdu', 'pass'),
-(13, 'yonas', '$2y$12$9QJyorylgaGua.IpTaV3jeYimv.IF2bIYM.P.6MpaKmSrmIMq2BPW');
+INSERT INTO `users` (`user_id`, `name`, `email`, `password`) VALUES
+(28, 'yonas', 'email@test.com', '$2y$12$jfQpK6Ip8tEQdYrvPYXFIuCYBuZwcTjdNnkKtjCEGviJRB2P63DOK');
 
 --
 -- Indexes for dumped tables
@@ -210,7 +200,7 @@ ALTER TABLE `seasons`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -220,25 +210,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `movies`
 --
 ALTER TABLE `movies`
-  MODIFY `movie_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `movie_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `profiles`
 --
 ALTER TABLE `profiles`
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `seasons`
 --
 ALTER TABLE `seasons`
-  MODIFY `season_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `season_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- Constraints for dumped tables

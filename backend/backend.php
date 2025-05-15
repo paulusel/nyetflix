@@ -27,16 +27,16 @@ class Backend {
     }
 
     /**
-     * @param array $user: new user information. Must contain 'username' and password
+     * @param array $user: new user information. Must contain 'email' and password
      * @return array: user information after addition of user_id to it
      */
     public static function subscribe(array $user) : array {
-        if(!isset($user["username"], $user["password"])) {
-            throw new BackendException("missing password or username field", 400);
+        if(!isset($user["email"], $user["password"], $user['name'])) {
+            throw new BackendException("missing password, email or name field", 400);
         }
 
-        if(!is_string($user['username']) || !is_string($user['password'])) {
-            throw new BackendException('invalid username or password data', 400);
+        if(!is_string($user['email']) || !is_string($user['password']) || !is_string($user['name'])) {
+            throw new BackendException('invalid user data types', 400);
         }
 
         if(strlen($user['password']) < 4) {
@@ -45,10 +45,10 @@ class Backend {
 
         try {
             $db = self::connection();
-            $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
-            $stmnt = $db->prepare("INSERT into users (username, password) VALUES (?, ?)");
-            $stmnt->execute([$user["username"], $password_hash]);
-            unset($user["password"]);
+            $password_hash = password_hash($user['password'], PASSWORD_DEFAULT);
+            $stmnt = $db->prepare('INSERT into users (email, password, name) VALUES (?, ?, ?)');
+            $stmnt->execute([$user['email'], $password_hash, $user['name']]);
+            unset($user['password']);
 
             // get user_id
             $stmnt = $db->prepare("SELECT LAST_INSERT_ID() AS id");
@@ -59,7 +59,7 @@ class Backend {
         }
         catch(PDOException $e) {
             if($e->errorInfo[1] === 1062) {
-                throw new BackendException("username already taken", 400);
+                throw new BackendException("email already registered with another user", 400);
             }
             else {
                 throw $e;
@@ -78,34 +78,26 @@ class Backend {
     }
 
     /**
-     * @param array $user: new user information. Must contain 'username' and password
+     * @param array $user: new user information. Must contain 'email' and password
      */
     public static function authenticate(array $user) : array {
-        if(!isset($user['username'], $user['password'])) {
+        if(!isset($user['email'], $user['password'])) {
             throw new BackendException("invalid user data", 400);
         }
 
         $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
 
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT user_id, username, password FROM users WHERE username = ?");
-        $stmnt->execute([$user["username"]]);
+        $stmnt = $db->prepare("SELECT user_id, name, email, password FROM users WHERE email = ?");
+        $stmnt->execute([$user["email"]]);
         $stored_user = $stmnt->fetch();
 
         if(!$stored_user || !password_verify($user['password'], $stored_user['password'])) {
-            throw new BackendException("incorrect username or password", 400);
+            throw new BackendException("incorrect email or password", 400);
         }
 
         unset($stored_user['password']);
         return $stored_user;
-    }
-
-    public static function isUserNameAvailable(string $username) : bool {
-        $db = self::connection();
-        $stmnt = $db->prepare("SELECT user_id FROM users WHERE username = ?");
-        $stmnt->execute([$username]);
-        $result = $stmnt->fetchAll();
-        return empty($result);
     }
 
     /**
@@ -115,7 +107,7 @@ class Backend {
      */
     private static function getUserData(int $user_id, PDO $db) : array|bool {
         $db = self::connection();
-        $stmnt = $db->prepare("SELECT user_id, username FROM users WHERE user_id = ?");
+        $stmnt = $db->prepare("SELECT user_id, name, email FROM users WHERE user_id = ?");
         $stmnt->execute([$user_id]);
         return $stmnt->fetch();
     }
@@ -237,9 +229,9 @@ class Backend {
         }
     }
 
-    public function verifyUser(string $username, string $password) : array {
-        $stmt = $this->db->prepare("SELECT id, username, password FROM users WHERE username = ?");
-        $stmt->execute([$username]);
+    public function verifyUser(string $email, string $password) : array {
+        $stmt = $this->db->prepare("SELECT id, name, email, password FROM users WHERE email = ?");
+        $stmt->execute([$email]);
         $user = $stmt->fetch();
 
         if (!password_verify($password, $user['password'])) {
@@ -248,8 +240,8 @@ class Backend {
 
         return [
             'id' => $user['id'],
-            'username' => $user['username'],
-            'role' => $user['role']
+            'name' => $user['name'],
+            'email' => $user['email']
         ];
     }
 
