@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../includes.php';
+require_once __DIR__ . '/../backend/includes.php';
 
 try {
     validateRequest();
@@ -12,14 +13,18 @@ try {
         exit;
     }
 
-    Backend::deleteProfile($user['user_id'], $profile_id);
-    sendJson(['ok' => true]);
+    $profile = Backend::getProfile($profile_id);
+    $user['profile_id'] = $profile_id;
+    $token = Auth::newToken($user);
+
+    sendJson(['ok' => true, 'token' => $token]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
 }
 catch(Throwable $e){
-    require __DIR__ . '/../logger.php';
+    require __DIR__ . '/../backend/logger.php';
     Logger::log($e->getMessage());
     sendMessage("internal server error", 500);
 }
+

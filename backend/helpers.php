@@ -1,6 +1,6 @@
 <?php
 
-require_once "backend/backend.php";
+require_once __DIR__ . "/backend.php";
 
 function idetifyUser(bool $check_profile = true) : array {
     require_once "../backend/auth.php";

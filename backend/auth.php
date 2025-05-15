@@ -1,13 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class Auth {
-    private static string $private_key_file = __DIR__ . '/private.key';
-    private static string $public_key_file = __DIR__ . '/public.key';
+    private static string $private_key_file = __DIR__ . '/keys/private.key';
+    private static string $public_key_file = __DIR__ . '/keys/public.key';
 
     public static function newToken(array $user) : string {
         static $private_key = file_get_contents(self::$private_key_file);

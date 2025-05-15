@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home - Netflix</title>
-    <link href="../assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
+    <link href="./assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
     <link href="./styles/index.css" rel="stylesheet" type="text/css" />
     <link href="./styles/main.css" rel="stylesheet" type="text/css" />
     <link href="./styles/nav.css" rel="stylesheet" type="text/css" />
@@ -22,7 +22,7 @@
         <header>
             <nav>
                 <div class="left">
-                    <img src="../assets/images/Icon/logo.png" class="brand" />
+                    <img src="./assets/images/Icon/logo.png" class="brand" />
                     <div class="nav-item small">Browse</div>
                     <ul class="nav-items">
                         <a href="home.php" class = "nav-items"><li class="nav-item">Home</li></a>
@@ -56,7 +56,7 @@
         <main>
           <div class="top">
             <img
-              src="../assets/images/Main/Top/The Grey Man.jpg"
+              src="./assets/images/Main/Top/The Grey Man.jpg"
               alt="background-image"
               class="bg-image"
           />
@@ -65,7 +65,7 @@
 
           <div class="billboard">
             <img
-              src="../assets/images/Main/Top/billboard.jpg"
+              src="./assets/images/Main/Top/billboard.jpg"
               alt="bg-img"
             />
             <div class="title">Watch Now</div>
@@ -89,11 +89,11 @@
             <div class="slider">
               <div class="content">
                 <div class="wrapper__front">
-                  <img src="../assets/images/Main/Body/Row1/Prison-Break.jpg" alt="Prison Break" />
+                  <img src="./assets/images/Main/Body/Row1/Prison-Break.jpg" alt="Prison Break" />
                 </div>
                 <div class="wrapper__back">
                   <div class="card__header">
-                    <img src="../assets/images/Main/Body/Row1/Prison-Break.jpg" alt="Prison Break" />
+                    <img src="./assets/images/Main/Body/Row1/Prison-Break.jpg" alt="Prison Break" />
                   </div>
                   <div class="card__body">
                     <div class="flex justify-between items-center">
@@ -130,37 +130,37 @@
               </div>
               <div class="content">
                 <img class = "item"
-                  src="../assets/images/Main/Body/Row1/TOP-BOY.jpg"
+                  src="./assets/images/Main/Body/Row1/TOP-BOY.jpg"
                 />
               </div>
               <div class="content">
                 <img class = "item"
-                  src="../assets/images/Main/Body/Row1/Money-Heist.jpg"
+                  src="./assets/images/Main/Body/Row1/Money-Heist.jpg"
                 />
               </div>
               <div class="content">
                 <img class = "item"
-                src="../assets/images/Main/Body/Row1/Night-Agent.jpg"
+                src="./assets/images/Main/Body/Row1/Night-Agent.jpg"
                 />
               </div>
               <div class="content">
                 <img class = "item"
-                src="../assets/images/Main/Body/Row1/The Rookie.jpg"
+                src="./assets/images/Main/Body/Row1/The Rookie.jpg"
                 />
               </div>
               <div class="content">
                 <img class = "item"
-                src="../assets/images/Main/Body/Row1/Vikings.jpg"
+                src="./assets/images/Main/Body/Row1/Vikings.jpg"
                 />
               </div>
               <div class="content">
                 <img class = "item"
-                src="../assets/images/Main/Body/Row1/SUPACELL.jpg"
+                src="./assets/images/Main/Body/Row1/SUPACELL.jpg"
                 />
               </div>
               <div class="content">
                 <img class = "item"
-                src="../assets/images/Main/Body/Row1/The-Union.jpg"
+                src="./assets/images/Main/Body/Row1/The-Union.jpg"
                 />
               </div>
             </div>
@@ -172,42 +172,42 @@
           <div class="slider">
             <div class="content">
               <img class = "item"
-                src="../assets/images/Main/Body/Row2/Squid-Game.jpg"
+                src="./assets/images/Main/Body/Row2/Squid-Game.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row2/Sakamoto-Days.jpg"
+              src="./assets/images/Main/Body/Row2/Sakamoto-Days.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row2/Outer Banks.jpg"
+              src="./assets/images/Main/Body/Row2/Outer Banks.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row2/Bad-Guys.jpg"
+              src="./assets/images/Main/Body/Row2/Bad-Guys.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row2/Carry On.jpg"
+              src="./assets/images/Main/Body/Row2/Carry On.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row2/Ticket to Paradise.jpg"
+              src="./assets/images/Main/Body/Row2/Ticket to Paradise.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row2/Ad Vitam.jpg"
+              src="./assets/images/Main/Body/Row2/Ad Vitam.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row2/Back in Action.jpg"
+              src="./assets/images/Main/Body/Row2/Back in Action.jpg"
               />
             </div>
           </div>
@@ -217,37 +217,37 @@
           <div class="slider">
             <div class="content">
               <img class = "item"
-                src="../assets/images/Main/Body/Row5/Baby Reindeer.jpg"
+                src="./assets/images/Main/Body/Row5/Baby Reindeer.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row5/Beef.jpg"
+              src="./assets/images/Main/Body/Row5/Beef.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row5/The Kominsky Method.jpg"
+              src="./assets/images/Main/Body/Row5/The Kominsky Method.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row5/Seinfield.jpg"
+              src="./assets/images/Main/Body/Row5/Seinfield.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row5/Friends.jpg"
+              src="./assets/images/Main/Body/Row5/Friends.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row5/Monk.jpg"
+              src="./assets/images/Main/Body/Row5/Monk.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row5/Mastor of None.jpg"
+              src="./assets/images/Main/Body/Row5/Mastor of None.jpg"
               />
             </div>
           </div>
@@ -257,42 +257,42 @@
           <div class="slider">
             <div class="content">
               <img class = "item"
-                src="../assets/images/Main/Body/Row6/Love and Monsters.jpg"
+                src="./assets/images/Main/Body/Row6/Love and Monsters.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row6/MIB international.jpg"
+              src="./assets/images/Main/Body/Row6/MIB international.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row6/One Piece.jpg"
+              src="./assets/images/Main/Body/Row6/One Piece.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row6/Dungeons and Dragons.jpg"
+              src="./assets/images/Main/Body/Row6/Dungeons and Dragons.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row6/The last Air-Bender.jpg"
+              src="./assets/images/Main/Body/Row6/The last Air-Bender.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row6/Divergent.jpg"
+              src="./assets/images/Main/Body/Row6/Divergent.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row6/The Witcher.jpg"
+              src="./assets/images/Main/Body/Row6/The Witcher.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row6/3 Body Problems.jpg"
+              src="./assets/images/Main/Body/Row6/3 Body Problems.jpg"
               />
             </div>
           </div>
@@ -302,42 +302,42 @@
           <div class="slider">
             <div class="content">
               <img class = "item"
-                src="../assets/images/Main/Body/Row7/Anyone but you.jpg"
+                src="./assets/images/Main/Body/Row7/Anyone but you.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row7/White Chicks.jpg"
+              src="./assets/images/Main/Body/Row7/White Chicks.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row7/Hotel transylvania.jpg"
+              src="./assets/images/Main/Body/Row7/Hotel transylvania.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row7/The six triple Eight.jpg"
+              src="./assets/images/Main/Body/Row7/The six triple Eight.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row7/Knight and Day.jpg"
+              src="./assets/images/Main/Body/Row7/Knight and Day.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row7/Little.jpg"
+              src="./assets/images/Main/Body/Row7/Little.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row7/LiarLiar.jpg"
+              src="./assets/images/Main/Body/Row7/LiarLiar.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row7/Lift.jpg"
+              src="./assets/images/Main/Body/Row7/Lift.jpg"
               />
             </div>
           </div>
@@ -348,47 +348,47 @@
           <div class="slider">
             <div class="content">
               <img class = "item"
-                src="../assets/images/Main/Body/Row3/Gifted.jpg"
+                src="./assets/images/Main/Body/Row3/Gifted.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/Narcos.jpg"
+              src="./assets/images/Main/Body/Row3/Narcos.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/Bodjack Horseman.jpg"
+              src="./assets/images/Main/Body/Row3/Bodjack Horseman.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/Instant Family.webp"
+              src="./assets/images/Main/Body/Row3/Instant Family.webp"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/Spiderman.jpg"
+              src="./assets/images/Main/Body/Row3/Spiderman.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/Stranger-Things.jpg"
+              src="./assets/images/Main/Body/Row3/Stranger-Things.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/The Social Network.jpg"
+              src="./assets/images/Main/Body/Row3/The Social Network.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/Space Force.jpg"
+              src="./assets/images/Main/Body/Row3/Space Force.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row3/Sherlock.jpg"
+              src="./assets/images/Main/Body/Row3/Sherlock.jpg"
               />
             </div>
           </div>
@@ -398,42 +398,42 @@
           <div class="slider">
             <div class="content">
               <img class = "item"
-                src="../assets/images/Main/Body/Row4/Bright.jpg"
+                src="./assets/images/Main/Body/Row4/Bright.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row4/The School for Good and Evil.jpg"
+              src="./assets/images/Main/Body/Row4/The School for Good and Evil.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row4/Jurassic-World.jpg"
+              src="./assets/images/Main/Body/Row4/Jurassic-World.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row4/BumbleBee.jpg"
+              src="./assets/images/Main/Body/Row4/BumbleBee.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row4/The day after Tomorrow.jpg"
+              src="./assets/images/Main/Body/Row4/The day after Tomorrow.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row4/Predator.jpg"
+              src="./assets/images/Main/Body/Row4/Predator.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row4/Transformers.jpg"
+              src="./assets/images/Main/Body/Row4/Transformers.jpg"
               />
             </div>
             <div class="content">
               <img class = "item"
-              src="../assets/images/Main/Body/Row4/Don't Look UP.jpg"
+              src="./assets/images/Main/Body/Row4/Don't Look UP.jpg"
               />
             </div>
 

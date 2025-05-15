@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../includes.php";
+require_once __DIR__ . '/../backend/includes.php';
 
 try {
     validateRequest(false);
@@ -13,7 +13,7 @@ catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
 }
 catch(Throwable $e){
-    require '../logger.php';
+    require __DIR__ . '/../backend/logger.php';
     Logger::log($e->__toString());
     sendMessage("internal server error", 500);
 }

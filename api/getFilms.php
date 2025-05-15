@@ -1,19 +1,19 @@
 <?php
 
-require_once __DIR__ . '/../includes.php';
+require_once __DIR__ . '/../backend/includes.php';
 
 try {
     validateRequest(false);
     $profile = idetifyUser();
 
-    $history = Backend::getHistory($profile['profile_id']);
-    sendJson(['ok' => true, 'history' => $history]);
+    $films = Backend::getFilmsSeries(1);
+    sendJson(['ok' => true, 'films' => $films]);
 }
 catch(BackendException $e) {
     sendMessage($e->getMessage(), $e->getCode());
 }
 catch(Throwable $e){
-    require __DIR__ . '/../logger.php';
+    require __DIR__ . '/../backend/logger.php';
     Logger::log($e->getMessage());
     sendMessage("internal server error", 500);
 }
