@@ -1,48 +1,126 @@
-const API_BASE_URL = '/';
+const API_BASE_URL = '/nyetflix/api';
 
-const getCommonHeaders = () => ({
-    'Content-Type': 'application/json'
-});
+const TOKEN_KEY = 'auth_token';
 
-const getAuthHeaders = () => {
-    const token = localStorage?.getItem('token');
-    if (!token) throw new Error('No token found in localStorage');
-    return {
-        ...getCommonHeaders(),
-        'Authorization': `Bearer ${token}`
-    };
-};
+const api = {
+    getToken() {
+        return localStorage.getItem(TOKEN_KEY);
+    },
 
-async function apiCall(endpoint, method = 'POST', body = null, requiresAuth = true) {
-    try {
-        const headers = requiresAuth ? getAuthHeaders() : getCommonHeaders();
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {method,headers,body: body ? JSON.stringify(body) : null});
+    setToken(token) {
+        localStorage.setItem(TOKEN_KEY, token);
+    },
 
-        const data = await response.json();
-        if (!response.ok || !data.ok) {
-            throw new Error(data.message || `HTTP ${response.status}: API request failed`);
+    clearToken() {
+        localStorage.removeItem(TOKEN_KEY);
+    },
+
+    async request(endpoint, data = null) {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        const token = this.getToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
         }
-        return data;
-    } catch (error) {
-        console.error('API Error:', error);
-        throw error;
-    }
-}
 
-export const authAPI = {
-    async signup(username, password) {
-        const result = await apiCall('signup.php', 'POST', { username, password }, false);
-        if (!result.token || !result.profile_pic) {
-            throw new Error('API response missing token or profile_pic');
+        const options = {
+            method : 'POST',
+            headers,
+            body: data ? JSON.stringify(data) : null
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
+            const result = await response.json();
+
+            if (!result.ok) {
+                throw new Error(result.message || 'API request failed');
+            }
+
+            return result;
+        } catch (error) {
+            console.error('API Error:', error);
+            throw error;
         }
+    },
+
+    // Authentication methods
+    async subscribe(name, email, password) {
+        const result = await this.request('subscribe.php', { name : name, email : email, password : password });
+        this.setToken(result.token);
         return result;
     },
 
-    async signin(username, password) {
-        const result = await apiCall('signin.php', 'POST', { username, password }, false);
-        if (!result.token || !result.profile_pic) {
-            throw new Error('API response missing token or profile_pic');
-        }
+    async authenticate(email, password) {
+        const result = await this.request('authenticate.php', { email : email, password : password });
+        this.setToken(result.token);
         return result;
-    }
+    },
+
+    // Profile methods
+    async addProfile(name) {
+        return this.request('addProfile.php', { name });
+    },
+
+    async setProfile(profileId) {
+        const result = await this.request('setProfile.php', profileId);
+        this.setToken(result.token);
+        return result;
+    },
+
+    async getAllProfiles() {
+        return this.request('getAllProfiles.php');
+    },
+
+    // Content methods
+    async getFilms() {
+        return this.request('getFilms.php');
+    },
+
+    async getSeries() {
+        return this.request('getSeries.php');
+    },
+
+    async getMovie(movieId) {
+        return this.request('getMovie.php', movieId);
+    },
+
+    async getSeason(movieId, seasonNo) {
+        return this.request('getSeason.php', { movie_id: movieId, season_no: seasonNo });
+    },
+
+    async getRecents() {
+        return this.request('getRecents.php');
+    },
+
+    async getGenre(genre) {
+        return this.request('getGenre.php', genre);
+    },
+
+    // My List methods
+    async getMyList() {
+        return this.request('getMyList.php');
+    },
+
+    async addToList(movieId) {
+        return this.request('addToList.php', movieId);
+    },
+
+    async removeFromList(movieId) {
+        return this.request('removeFromList.php', movieId);
+    },
+
+    // User information
+    async getMe() {
+        return this.request('getMe.php');
+    },
+
+    // Watch history
+    async getHistory() {
+        return this.request('getHistory.php');
+    },
 };
+
+export default api;

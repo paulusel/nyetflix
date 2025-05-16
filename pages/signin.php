@@ -13,7 +13,7 @@
     </nav>
     <div class="form-wrapper">
         <h2>Sign In</h2>
-            <form id="signin-form" onsubmit="event.preventDefault(); signin();">
+        <form id="signin-form">
             <div class="form-control">
                 <input id="email-input" type="text" required>
                 <label>Email or phone number</label>
@@ -22,7 +22,7 @@
                 <input id="password-input" type="password" required>
                 <label>Password</label>
             </div>
-                <button type="submit">Sign In</button>
+            <button type="submit">Sign In</button>
             <div class="form-help"> 
                 <div class="remember-me">
                     <input type="checkbox" id="remember-me">
@@ -37,6 +37,6 @@
             <a href="#">Learn more.</a>
         </small>
     </div>
-    <script src="scripts/signin.js"></script>
+    <script type="module" src="scripts/signin.js"></script>
 </body>
 </html>

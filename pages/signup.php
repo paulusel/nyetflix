@@ -15,7 +15,7 @@
 
         <div class="signup-container">
             <h1>Sign Up</h1>
-            <form id="signup-form" onsubmit="event.preventDefault(); signup();">
+            <form id="signup-form">
                 <div class="form-group">
                     <input type="text" id="name-input" placeholder="Name" required>
                 </div>
@@ -50,6 +50,6 @@
             </div>
         </div>
     </div>
-    <script src="scripts/signup.js"></script>
+    <script type="module" src="scripts/signup.js"></script>
 </body>
 </html>

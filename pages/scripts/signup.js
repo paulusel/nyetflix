@@ -1,63 +1,53 @@
-async function signup() {
-    // extract data from form
-    const body = {
-        'name' : document.getElementById('name-input').value,
-        'email' : document.getElementById('email-input').value,
-        'password' : document.getElementById('password-input').value
-    };
+import api from './api.js';
 
-    if(!body.name || !body.email | !body.password) {
-        // TODO: show message?
-        console.log('fields missing');
-        return;
-    }
-
-    const response = await fetch('/nyetflix/api/subscribe.php', {
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json'
-        },
-        body : JSON.stringify(body)
-    });
-
-    try {
-        const result = await response.json();
-        if(!result.ok) {
-            // TODO: show message?
-            console.log('request failed: ' + result.message);
-            return;
+const signup = {
+    async checkAuth() {
+        const token = api.getToken();
+        if (token) {
+            try {
+                const result = await api.getMe();
+                window.location.href = result.data.profile ? 'home.php' : 'profile.php';
+            } catch (error) {
+                api.clearToken();
+            }
         }
+    },
 
-        localStorage.setItem('token', result.token);
-        if(setProfile()) {
-            window.location.href = 'home.php';
+    async handleSignup(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('name-input').value;
+        const username = document.getElementById('email-input').value;
+        const password = document.getElementById('password-input').value;
+
+        try {
+            await api.subscribe(name, username, password);
+            const profiles = await api.getAllProfiles();
+            const setProfileResult = await api.setProfile(profiles.profiles[0].profile_id);
+            if (setProfileResult.auth_token) {
+                localStorage.setItem('auth_token', setProfileResult.auth_token);
+                window.location.href = 'home.php';
+            }
+            else {
+                throw new Error('Failed to set profile');
+            }
+        } catch (error) {
+            console.error('Signup error:', error);
+            alert(error.message || 'Failed to sign up. Please try again.');
         }
-        else {
-            console.log('failed to set profile');
+    },
+
+    init() {
+        this.checkAuth();
+
+        const form = document.getElementById('signup-form');
+        if (form) {
+            form.addEventListener('submit', this.handleSignup.bind(this));
         }
-    } catch (error) {
-        console.error('server response error:');
-        return;
     }
-}
+};
 
-async function setProfile() {
-    const response = await fetch('/nyetflix/api/getAllProfiles.php', {
-        method : 'POST'
-    });
-    const json = await response.json();
-    response = await fetch('/nyetflix/api/setProfile.php', {
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json',
-            'Authorization' : 'Bearer ' + localStorage.getItem('token')
-        },
-        body : JSON.stringify(json.profiles[0].profile_id)
-    });
-    json = await response.json();
-    if(json.ok) {
-        localStorage.setItem('token', json.token);
-    }
-
-    return json.ok;
-}
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    signup.init();
+});

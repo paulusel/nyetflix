@@ -17,7 +17,21 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-  </head>
+    <style>
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .error-message {
+            background-color: #e50914;
+            color: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
     <body>
         <header>
             <nav>
@@ -474,8 +488,16 @@
 
       <script type="module" src="./scripts/script.js"></script>
       <script src="https://unpkg.com/feather-icons"></script>
-      <script>
+      <script type="module">
+        import ui from './scripts/ui.js';
+        
+        // Initialize Feather icons
         feather.replace();
+        
+        // Initialize UI
+        document.addEventListener('DOMContentLoaded', () => {
+            ui.init();
+        });
       </script>
     </body>
 </html>

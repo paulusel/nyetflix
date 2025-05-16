@@ -1,55 +1,58 @@
-async function signin() {
-    const body = {
-        'email' : document.getElementById('email-input').value,
-        'password' : document.getElementById('password-input').value
-    };
+import api from './api.js';
 
-    const response = await fetch('/nyetflix/api/authenticate.php', {
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json'
-        },
-        body : JSON.stringify(body)
-    });
-
-    const json = await response.json();
-    if(!json.ok) {
-        console.log('api call failed: ' + json.message);
-        return;
-    }
-
-    localStorage.setItem('token', json.token);
-    handleProfile();
-}
-
-async function handleProfile() {
-    let response = await fetch('/nyetflix/api/getAllProfiles.php', {
-        method : 'POST',
-        headers : {
-            'Authorization' : 'Bearer ' + localStorage.getItem('token')
+const signin = {
+    async checkAuth() {
+        const token = api.getToken();
+        if (token) {
+            try {
+                const result = await api.getMe();
+                window.location.href = result.data.profile ? 'home.php' : 'profile.php';
+            } catch (error) {
+                api.clearToken();
+            }
         }
-    });
+    },
 
-    let json = await response.json();
-    if(json.profiles.length > 1) {
-        window.location.href = 'profile.php';
-    }
-    else {
-        const response = await fetch('/nyetflix/api/setProfile.php', {
-            method : 'POST',
-            headers : {
-                'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem('token')
-            },
-            body : JSON.stringify(json.profiles[0].profile_id)
-        });
-        json = await response.json();
-        if(json.ok) {
-            localStorage.setItem('token', json.token);
-            window.location.href = 'home.php';
+    async handleSignin(event) {
+        event.preventDefault();
+        const email = document.getElementById('email-input').value;
+        const password = document.getElementById('password-input').value;
+
+        try {
+            await api.authenticate(email, password);
+            const profiles = await api.getAllProfiles();
+            if (profiles.profiles && profiles.profiles.length > 1) {
+                window.location.href = 'profile.php';
+            } else if (profiles.profiles && profiles.profiles.length === 1) {
+                const profileResult = await api.setProfile(profiles.profiles[0].profile_id);
+                if (profileResult.auth_token) {
+                    localStorage.setItem('auth_token', profileResult.auth_token);
+                    window.location.href = 'home.php';
+                }
+                else {
+                    throw new Error("Failed to set profile");
+                }
+            } else {
+                throw new Error('No profiles found');
+            }
+        } catch (error) {
+            console.error('Signin error:', error);
+            alert(error.message || 'Failed to sign in. Please try again.');
         }
-        else {
-            console.log('setting profile failed: ' + json.message);
+    },
+
+    init() {
+        // Check auth status when page loads
+        this.checkAuth();
+
+        const form = document.getElementById('signin-form');
+        if (form) {
+            form.addEventListener('submit', this.handleSignin.bind(this));
         }
     }
-}
+};
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    signin.init();
+});
