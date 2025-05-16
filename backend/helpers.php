@@ -11,16 +11,19 @@ function idetifyUser(bool $check_profile = true) : array {
     $token = str_replace('Bearer ', '', $header);
     $token = trim($token);
 
+    if(!$token && isset($_COOKIE['auth_token'])) {
+        $token = $_COOKIE['auth_token'];
+    }
+
     $user = Auth::validate($token);
     $user['user'] = Backend::getUser($user['user_id']);
 
-    if($check_profile) {
-        if(isset($user['profile_id'])) {
-            $user['profile'] = Backend::getProfile($user['profile_id']);
-        }
-        else {
-            throw new BackendException('profile is not set. create or set one before making this request', 400);
-        }
+    if(isset($user['profile_id'])) {
+        $user['profile'] = Backend::getProfile($user['profile_id']);
+    }
+
+    if($check_profile && !isset($user['profile'])) {
+        throw new BackendException('profile is not set. create or set one before making this request', 400);
     }
 
     return $user;
