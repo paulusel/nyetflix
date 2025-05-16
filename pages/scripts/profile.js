@@ -1,20 +1,6 @@
 import api from './api.js';
 
 const profile = {
-    async checkAuth() {
-        const token = api.getToken();
-        if (token) {
-            try {
-                const result = await api.getMe();
-                if(result.data.profile) {
-                    window.location.href =  'home.php';
-                }
-            } catch (error) {
-                api.clearToken();
-            }
-        }
-    },
-
     async loadProfiles() {
         try {
             const result = await api.getAllProfiles();
@@ -61,7 +47,6 @@ const profile = {
     },
 
     init() {
-        this.checkAuth();
         this.loadProfiles();
 
         const manageButton = document.getElementById('manage-profiles-btn');

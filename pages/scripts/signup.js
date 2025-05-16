@@ -1,18 +1,6 @@
 import api from './api.js';
 
 const signup = {
-    async checkAuth() {
-        const token = api.getToken();
-        if (token) {
-            try {
-                const result = await api.getMe();
-                window.location.href = result.data.profile ? 'home.php' : 'profile.php';
-            } catch (error) {
-                api.clearToken();
-            }
-        }
-    },
-
     async handleSignup(event) {
         event.preventDefault();
 
@@ -38,8 +26,6 @@ const signup = {
     },
 
     init() {
-        this.checkAuth();
-
         const form = document.getElementById('signup-form');
         if (form) {
             form.addEventListener('submit', this.handleSignup.bind(this));

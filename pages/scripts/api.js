@@ -4,26 +4,32 @@ const TOKEN_KEY = 'auth_token';
 
 const api = {
     getToken() {
-        return localStorage.getItem(TOKEN_KEY);
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [name, value] = cookie.split('=');
+            if (name === TOKEN_KEY) return value;
+        }
+        return null;
     },
 
-    setToken(token) {
-        localStorage.setItem(TOKEN_KEY, token);
+    setToken(token, exp_days = 0) {
+        let cookie = `${TOKEN_KEY}=${token}`;
+        if(exp_days > 0) {
+            const exp = new Date();
+            exp.setDate(exp.getDate() + exp_days);
+            cookie += `; expires=${exp.toUTCString()}`;
+        }
+        document.cookie = `${cookie}; path=/; SameSite=Strict`;
     },
 
     clearToken() {
-        localStorage.removeItem(TOKEN_KEY);
+        document.cookie = `${TOKEN_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
     },
 
     async request(endpoint, data = null) {
         const headers = {
             'Content-Type': 'application/json'
         };
-
-        const token = this.getToken();
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
 
         const options = {
             method : 'POST',
@@ -36,12 +42,12 @@ const api = {
             const result = await response.json();
 
             if (!result.ok) {
-                throw new Error(result.message || 'API request failed');
+                throw new Error(result.message);
             }
 
             return result;
         } catch (error) {
-            console.error('API Error:', error);
+            console.error('API request error:', error);
             throw error;
         }
     },
@@ -53,9 +59,9 @@ const api = {
         return result;
     },
 
-    async authenticate(email, password) {
+    async authenticate(email, password, remember_me = false) {
         const result = await this.request('authenticate.php', { email : email, password : password });
-        this.setToken(result.token);
+        this.setToken(result.token, remember_me ? 30 : 0);
         return result;
     },
 
