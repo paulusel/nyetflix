@@ -7,7 +7,7 @@ const signin = {
         const password = document.getElementById('password-input').value;
 
         try {
-            await api.authenticate(email, password);
+            await api.authenticate(email, password, document.getElementById('remember-me').checked);
             const profiles = await api.getAllProfiles();
             if (profiles.profiles && profiles.profiles.length > 1) {
                 window.location.href = 'profile.php';

@@ -1,6 +1,7 @@
 const API_BASE_URL = '/nyetflix/api';
 
 const TOKEN_KEY = 'auth_token';
+const TOKEN_EXP_KEY = `${TOKEN_KEY}_expires`;
 
 const api = {
     getToken() {
@@ -12,12 +13,20 @@ const api = {
         return null;
     },
 
-    setToken(token, exp_days = 0) {
+    setToken(token, exp_days = null) {
         let cookie = `${TOKEN_KEY}=${token}`;
-        if(exp_days > 0) {
+        if(exp_days !== null && exp_days > 0) {
             const exp = new Date();
             exp.setDate(exp.getDate() + exp_days);
             cookie += `; expires=${exp.toUTCString()}`;
+            sessionStorage.setItem(TOKEN_EXP_KEY, exp.getTime());
+        }
+        else {
+            const savedExp = sessionStorage.getItem(TOKEN_EXP_KEY);
+            if (savedExp) {
+                const exp = new Date(parseInt(savedExp));
+                cookie += `; expires=${exp.toUTCString()}`;
+            }
         }
         document.cookie = `${cookie}; path=/; SameSite=Strict`;
     },
