@@ -28,13 +28,15 @@ Sign up new user to the platform.
 
 ### Request
 
-+ `username` - chosen username of the user
++ `name` - default profile name
++ `email` - chosen username of the user
 + `password` - password of the user
 
 **Note:** This method doesn't require `Authorization` header.
 
 ```
 {
+    "name": "mathos",
     "username": "mathos",
     "password": "password"
 }
@@ -114,7 +116,7 @@ Sign in a previously registered user.
 
 ### Request
 
-+ `username` - username of the user about to login
++ `email` - email of the user about to login
 + `password` - password of the user
 
 **Note:** This method doesn't require `Authorization` header.
@@ -678,34 +680,5 @@ Empty
             "picture": null
         }
     }
-}
-```
-
-## checkUserName
-
-Checks if a username is available or already taken. This can be used to check availability of username during signup.
-
-**Note:** No authentication is needed to make this request. This can be used to check availability of username during signup.
-
-### Endpoint
-
-`api/checkUserName.php`
-
-### Request
-
-Single string and only string specifying username being requested.
-
-Example: ```"myusername"```
-
-### Response
-
-+ `available` - boolean value. `true` means username is not taken and `false` otherwise.
-
-Example:
-
-```
-{
-    "ok": true,
-    "available": true
 }
 ```
