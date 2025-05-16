@@ -125,6 +125,8 @@ class DirectoryProcessor {
 
             $files = $this->getInterestingFiles($path);
             $this->setSavePoint("movie");
+
+            $local_success = false;
             if (isset($files['video']) && isset($files['thumbnail'])) {
                 $local_success = $this->processMovie($path, false) || $success;
             }
@@ -184,13 +186,9 @@ class DirectoryProcessor {
         if(!$success) return false;
 
         $thumbnail = "$input_path" . '/' . $this->getInterestingFiles($input_path)['thumbnail'];
-        $thumbnail_dir = "$this->thumbnail_dir/$movie_id";
-        if (!mkdir($thumbnail_dir, 0755, true)) {
-            return $this->handleError("Failed to create thumbnail directory", $input_path);
-        }
-
         $ext = strtolower(pathinfo($thumbnail, PATHINFO_EXTENSION));
-        $thumbnail_out = "$thumbnail_dir/$movie_id.$ext";
+
+        $thumbnail_out = "$this->thumbnail_dir/$movie_id.$ext";
         if (!copy($thumbnail, $thumbnail_out)) {
             return $this->handleError("Failed to copy thumbnail", $input_path);
         }
@@ -278,7 +276,6 @@ class DirectoryProcessor {
         }
 
         $out_path = $this->movie_dir . '/' . $movie_id;
-        echo "Create directory: $out_path\n";
         if (!is_dir($out_path) && !@mkdir($out_path, 0755, true)) {
             $error = error_get_last();
             echo "Current working directory: " . getcwd() . "\n";
@@ -293,15 +290,8 @@ class DirectoryProcessor {
         }
 
         $thumbnail = "$input_path" . '/' . $this->getInterestingFiles($input_path)['thumbnail'];
-        $thumbnail_dir = "$this->thumbnail_dir/$movie_id";
-        if (!is_dir($thumbnail_dir) && !@mkdir($thumbnail_dir, 0755, true)) {
-            $error = error_get_last();
-            $this->cleanupDirectory($out_path);
-            return $this->handleError("Failed to create thumbnail directory: " . ($error['message'] ?? 'Unknown error'));
-        }
-
         $ext = strtolower(pathinfo($thumbnail, PATHINFO_EXTENSION));
-        $thumbnail_out = "$thumbnail_dir/$movie_id.$ext";
+        $thumbnail_out = "$this->thumbnail_dir/$movie_id.$ext";
         if (!@copy($thumbnail, $thumbnail_out)) {
             $error = error_get_last();
             $this->cleanupDirectory($out_path);
