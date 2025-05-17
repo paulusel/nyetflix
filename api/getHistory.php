@@ -7,6 +7,7 @@ try {
     $profile = idetifyUser();
 
     $history = Backend::getHistory($profile['profile_id']);
+    fixThumbnailPaths($history);
     sendJson(['ok' => true, 'history' => $history]);
 }
 catch(BackendException $e) {

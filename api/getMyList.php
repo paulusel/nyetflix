@@ -7,6 +7,7 @@ try {
     $profile = idetifyUser();
 
     $items = Backend::listItems($profile['profile_id']);
+    fixThumbnailPaths($items);
     sendJson(['ok' => true, 'items' => $items]);
 }
 catch(BackendException $e) {

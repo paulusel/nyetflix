@@ -7,6 +7,7 @@ try {
     $profile = idetifyUser();
 
     $series = Backend::getFilmsSeries(2);
+    fixThumbnailPaths($series);
     sendJson(['ok' => true, 'series' => $series]);
 }
 catch(BackendException $e) {

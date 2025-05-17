@@ -157,9 +157,12 @@ class DirectoryProcessor {
         $title = basename($input_path);
         $description = "Default description";
 
+        $thumbnail = "$input_path" . '/' . $this->getInterestingFiles($input_path)['thumbnail'];
+        $ext = strtolower(pathinfo($thumbnail, PATHINFO_EXTENSION));
+
         try {
-            $stmnt = $this->db->prepare("INSERT INTO movies (title, description, type) values (?, ?, 2)");
-            $stmnt->execute([$title, $description]);
+            $stmnt = $this->db->prepare("INSERT INTO movies (title, description, ext, type) values (?, ?, ?, 2)");
+            $stmnt->execute([$title, $description, $ext]);
             $movie_id = $this->db->lastInsertId();
         } catch (PDOException $e) {
             return $this->handleError("Database error: " . $e->getMessage());
@@ -184,9 +187,6 @@ class DirectoryProcessor {
         }
 
         if(!$success) return false;
-
-        $thumbnail = "$input_path" . '/' . $this->getInterestingFiles($input_path)['thumbnail'];
-        $ext = strtolower(pathinfo($thumbnail, PATHINFO_EXTENSION));
 
         $thumbnail_out = "$this->thumbnail_dir/$movie_id.$ext";
         if (!copy($thumbnail, $thumbnail_out)) {
@@ -267,9 +267,12 @@ class DirectoryProcessor {
         $title = basename($input_path);
         $description = "Default movie description";
 
+        $thumbnail = "$input_path" . '/' . $this->getInterestingFiles($input_path)['thumbnail'];
+        $ext = strtolower(pathinfo($thumbnail, PATHINFO_EXTENSION));
+
         try {
-            $stmnt = $this->db->prepare('INSERT INTO movies (title, description, type) values (?, ?, ?)');
-            $stmnt->execute([$title, $description, $episode ? 3 : 1]);
+            $stmnt = $this->db->prepare('INSERT INTO movies (title, description, ext, type) values (?, ?, ?, ?)');
+            $stmnt->execute([$title, $description, $ext, $episode ? 3 : 1]);
             $movie_id = $this->db->lastInsertId();
         } catch (PDOException $e) {
             return $this->handleError("Database error: " . $e->getMessage());
@@ -289,8 +292,6 @@ class DirectoryProcessor {
             return false;
         }
 
-        $thumbnail = "$input_path" . '/' . $this->getInterestingFiles($input_path)['thumbnail'];
-        $ext = strtolower(pathinfo($thumbnail, PATHINFO_EXTENSION));
         $thumbnail_out = "$this->thumbnail_dir/$movie_id.$ext";
         if (!@copy($thumbnail, $thumbnail_out)) {
             $error = error_get_last();

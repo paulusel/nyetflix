@@ -13,6 +13,7 @@ try {
     }
 
     $genre_movies = Backend::getGenreMovies($genre);
+    fixThumbnailPaths($genre_movies);
     sendJson(['ok' => true, 'movies' => $genre_movies]);
 }
 catch(BackendException $e) {

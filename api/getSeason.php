@@ -12,6 +12,7 @@ try {
         exit;
     }
     $episodes = Backend::getSeasonByNumber($season_info['movie_id'], $season_info['season_no']);
+    fixThumbnailPaths($episodes);
     sendJson(['ok' => true, 'episodes' => $episodes]);
 }
 catch(BackendException $e) {

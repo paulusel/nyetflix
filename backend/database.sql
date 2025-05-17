@@ -68,7 +68,8 @@ CREATE TABLE `movies` (
   `title` varchar(20) NOT NULL,
   `description` varchar(100) NOT NULL,
   `added` timestamp NOT NULL DEFAULT current_timestamp(),
-  `type` smallint(6) NOT NULL CHECK (`type` in (1,2,3))
+  `type` smallint(6) NOT NULL CHECK (`type` in (1,2,3)),
+  `ext` varchar(5) NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

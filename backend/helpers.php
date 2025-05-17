@@ -2,6 +2,10 @@
 
 require_once __DIR__ . "/backend.php";
 
+$movie_dir = "/nyetflix/backend/data/movies";
+$thumbnails_dir = "/nyetflix/media/thumbnails";
+$pictures_dir = "/nyetflix/media/pictures";
+
 function idetifyUser(bool $check_profile = true) : array {
     require_once "../backend/auth.php";
 
@@ -48,4 +52,14 @@ function sendJson(mixed $value, int $statusCode = 200) : void {
     header("Content-Type: application/json");
     http_response_code($statusCode);
     echo json_encode($value);
+}
+
+function fixThumbnailPaths(array $movies) {
+    global $thumbnails_dir;
+    foreach ($movies as $movie) {
+        $movie_id = $movie['movie_id'];
+        $ext = $movie['ext'];
+        $movie['thumbnail'] = "$thumbnails_dir/$movie_id.$ext";
+        unset($movie['ext']);
+    }
 }

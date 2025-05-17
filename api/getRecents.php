@@ -7,6 +7,7 @@ try {
     $profile = idetifyUser();
 
     $recent_movies = Backend::getRecents();
+    fixThumbnailPaths($recent_movies);
     sendJson(['ok' => true, 'movies' => $recent_movies]);
 }
 catch(BackendException $e) {

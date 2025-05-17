@@ -13,6 +13,7 @@ try {
     }
 
     $movie = Backend::getMovieDetail($movie_id);
+    fixThumbnailPaths([$movie]);
     sendJson(["ok" => true, "movie" => $movie]);
 }
 catch(BackendException $e) {
