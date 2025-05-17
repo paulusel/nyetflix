@@ -54,9 +54,9 @@ function sendJson(mixed $value, int $statusCode = 200) : void {
     echo json_encode($value);
 }
 
-function fixThumbnailPaths(array $movies) {
+function fixThumbnailPaths(array &$movies) {
     global $thumbnails_dir;
-    foreach ($movies as $movie) {
+    foreach ($movies as &$movie) {
         $movie_id = $movie['movie_id'];
         $ext = $movie['ext'];
         $movie['thumbnail'] = "$thumbnails_dir/$movie_id.$ext";
