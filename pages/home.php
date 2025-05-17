@@ -61,11 +61,70 @@ catch(Exception $e) {
             border-radius: 4px;
             text-align: center;
         }
+        .video-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 10000;
+            display: none;
+        }
+        .video-player video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .video-player:hover .video-controls {
+            opacity: 1;
+        }
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10001;
+        }
     </style>
 </head>
 <body>
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-spinner"></div>
+    </div>
+
+    <div id="video-player" class="video-player">
+        <button class="close-btn">&times;</button>
+        <video id="video" controls></video>
+        <div class="video-controls">
+            <button class="play-pause">
+                <i class="fa fa-play"></i>
+            </button>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <div class="time">0:00 / 0:00</div>
+            <button class="fullscreen">
+                <i class="fa fa-expand"></i>
+            </button>
+        </div>
     </div>
 
     <header>
@@ -110,6 +169,7 @@ catch(Exception $e) {
     </main>
 
     <script src="https://unpkg.com/feather-icons"></script>
+    <script src="scripts/hls.min.js"></script>
     <script type="module" src="scripts/home.js"></script>
 </body>
 </html>

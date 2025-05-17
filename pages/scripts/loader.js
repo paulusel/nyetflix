@@ -1,58 +1,103 @@
-class Loader extends Hls.DefaultConfig.loader {
-  constructor(config, token, url, videoId, pos) {
-    super(config);
-    this.token = token;
-    this.url = url;
-    this.videoId = videoId;
-  }
-
-  load(context, config, callbacks) {
-    const requestData = {
-      video_id: this.videoId,
-      request_type: context.type,
-      segment_info: null
-    };
-
-    if (context.type === 'segment') {
-      requestData.segment_info = {
-        sn: context.frag.sn,
-        start: context.frag.start
-      };
+class MovieLoader extends Hls.DefaultConfig.loader {
+    constructor(config) {
+        super(config);
+        this.url = config.url;
+        this.movie_id = config.movie_id;
     }
 
-    fetch(this.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.token
-      },
-      body: JSON.stringify(requestData)
-    })
-    .then(response => {
-      if (!response.ok) {
-          throw new Error('Request failed');
-      }
-      return context.responseType === 'text' ? response.text() : response.arrayBuffer();
-    })
-    .then(data => {
-      callbacks.onSuccess({
-        url: context.url,
-        data: data
-      }, context);
-    })
-    .catch(error => {
-      callbacks.onError(error, context);
+    load(context, config, callbacks) {
+        const requestData = {
+            movie_id: this.movie_id,
+            request_type: context.type ? 'manifest' : 'segment',
+        };
+
+        if (requestData.request_type === 'segment') {
+            requestData.segment_info = {
+                sn: context.frag.sn,
+                start: context.frag.start
+            };
+        }
+
+        fetch(this.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData),
+            credentials: 'include'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (contentType === 'application/vnd.apple.mpegurl') {
+                return response.text();
+            } else if (contentType === 'video/MP2T') {
+                return response.arrayBuffer();
+            } else {
+                throw new Error('Unexpected content type: ' + contentType);
+            }
+        })
+        .then(data => {
+            const response = {
+                url: context.url,
+                data: data
+            };
+
+            const stats = {
+                aborted: false,
+                loaded: data.length,
+                total: data.length,
+                trequest: performance.now(),
+                tfirst: performance.now(),
+                tload: performance.now(),
+                loading : { start: 0, first: 0, end: 0 },
+                parsing : { start: 0, end: 0 },
+                buffering : { start: 0, first: 0, end: 0 },
+            };
+
+            callbacks.onSuccess(response, stats, context);
+        })
+        .catch(error => {
+            console.error('Loader error:', error);
+            callbacks.onError(error, context);
+        });
+    }
+}
+
+function getStreamer(url, movie_id, startPosition = -1) {
+    const config = {
+        loader: MovieLoader,
+        startPosition: startPosition,
+        lowLatencyMode: true,
+        movie_id: movie_id,
+        url: url
+    };
+
+    const hls = new Hls(config);
+
+    hls.on(Hls.Events.ERROR, (event, data) => {
+        if (data.fatal) {
+            switch (data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                    console.error('Network error:', data);
+                    this.hls.startLoad();
+                    break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                    console.error('Media error:', data);
+                    this.hls.recoverMediaError();
+                    break;
+                default:
+                    console.error('Fatal error:', data);
+                    this.closeVideo();
+                    break;
+            }
+        }
     });
-  }
+
+    return hls;
 }
 
-function getHLS(token, url, videoId, pos) {
-  const config = {
-    loader: (cfg) => new Loader(cfg, token, url, videoId),
-    startPosition: pos,
-    enableWorker: true,
-    lowLatencyMode: true
-  };
-
-  return new Hls(config);
-}
+export { getStreamer };

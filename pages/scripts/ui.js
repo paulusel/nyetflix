@@ -1,7 +1,6 @@
 import api from './api.js';
 
 const ui = {
-    // Loading state management
     showLoading(element) {
         element.classList.add('loading');
         element.style.opacity = '0.5';
@@ -14,7 +13,6 @@ const ui = {
         element.style.pointerEvents = 'auto';
     },
 
-    // Error handling
     showError(message, element) {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
@@ -23,11 +21,10 @@ const ui = {
         setTimeout(() => errorDiv.remove(), 5000);
     },
 
-    // Content row creation
     createContentRow(title, items) {
         const row = document.createElement('div');
         row.className = 'content-row column';
-        
+
         const titleDiv = document.createElement('div');
         titleDiv.className = 'title';
         titleDiv.textContent = title;
@@ -35,7 +32,7 @@ const ui = {
 
         const slider = document.createElement('div');
         slider.className = 'slider';
-        
+
         items.forEach(movie => {
             const content = document.createElement('div');
             content.className = 'content';
@@ -47,7 +44,7 @@ const ui = {
         return row;
     },
 
-    // Movie card creation
+    // movie card factory
     createMovieCard(movie) {
         return `
             <div class="wrapper__front">
@@ -92,13 +89,13 @@ const ui = {
         `;
     },
 
-    // Load and display content
+    // load and display content
     async loadContent() {
         const contentRows = document.getElementById('content-rows');
         this.showLoading(contentRows);
 
         try {
-            // Load different categories
+            // load categories
             const [recentRes, filmsRes, seriesRes, myListRes] = await Promise.all([
                 api.getRecents(),
                 api.getFilms(),
@@ -106,10 +103,8 @@ const ui = {
                 api.getMyList()
             ]);
 
-            // Clear existing content
             contentRows.innerHTML = '';
 
-            // Add content rows
             if (recentRes.movies && recentRes.movies.length > 0) {
                 contentRows.appendChild(this.createContentRow('Get In on the Action', recentRes.movies));
             }
@@ -123,7 +118,6 @@ const ui = {
                 contentRows.appendChild(this.createContentRow('My List', myListRes.items));
             }
 
-            // Add event listeners for movie cards
             this.setupMovieCardListeners();
         } catch (error) {
             console.error('Failed to load content:', error);
@@ -134,22 +128,21 @@ const ui = {
     },
 
     setupMovieCardListeners() {
-        // Play button
         document.querySelectorAll('.play-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const movieId = e.currentTarget.dataset.id;
-                // Handle play action
-                console.log('Play movie:', movieId);
+                const event = new CustomEvent('playVideo', { detail: { movieId } });
+                document.dispatchEvent(event);
             });
         });
 
-        // Add to list button
+        // add to list button
         document.querySelectorAll('.add-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const movieId = e.currentTarget.dataset.id;
                 try {
                     await api.addToList(movieId);
-                    // Update UI to show added state
+                    // update UI to show added state
                     e.currentTarget.innerHTML = `
                         <svg class="card__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -161,19 +154,16 @@ const ui = {
             });
         });
 
-        // Info button
+        // info button
         document.querySelectorAll('.info-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const movieId = e.currentTarget.dataset.id;
-                // Handle info action
                 console.log('Show info for movie:', movieId);
             });
         });
     },
 
-    // Initialize UI
     init() {
-        // Initialize any UI components that need setup
         feather.replace();
     }
 };

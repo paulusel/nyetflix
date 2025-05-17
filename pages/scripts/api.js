@@ -135,7 +135,7 @@ const api = {
     // Watch history
     async getHistory() {
         return this.request('getHistory.php');
-    },
+    }
 };
 
 export default api;
