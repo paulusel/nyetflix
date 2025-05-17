@@ -251,7 +251,8 @@ class Backend {
 
     public static function insertHistory(int $profile_id, int $movie_id) : void {
         $db = self::connection();
-        $stmnt = $db->prepare("INSERT INTO history (profile_id, movie_id) VALUES (?, ?)");
+        $stmnt = $db->prepare("INSERT INTO history (profile_id, movie_id) VALUES (?, ?) " .
+            " ON DUPLICATE KEY UPDATE position = 0");
         $stmnt->execute([$profile_id, $movie_id]);
     }
 
