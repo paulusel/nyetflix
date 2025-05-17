@@ -1,13 +1,14 @@
 <?php
 
-if ($argc < 2) {
-    die("Usage: php hls_processor.php <input_directory> [output_directory]\n");
+if ($argc < 4) {
+    die("Usage: php hls_processor.php <input_directory> <output_directory> [thumbnail_dir]\n");
 }
 
 $inputDir = rtrim($argv[1], '/');
-$outputDir = $argv[2] ? rtrim($argv[2], '/') : '.';
+$outputDir = rtrim($argv[2], '/');
+$optional_dir = $argv[3] ? rtrim($argv[3], '/') : null;
 
-new DirectoryProcessor()->process($inputDir, $outputDir);
+new DirectoryProcessor()->process($inputDir, $outputDir, $optional_dir);
 
 class DirectoryProcessor {
     private PDO $db;
@@ -80,7 +81,7 @@ class DirectoryProcessor {
         }
     }
 
-    public function process(string $input_dir, string $output_dir) : bool {
+    public function process(string $input_dir, string $output_dir, ?string $thumbnail_out_dir = null) : bool {
         if (!is_dir($input_dir)) {
             echo "Error: Input directory does not exist\n";
             return false;
@@ -91,15 +92,15 @@ class DirectoryProcessor {
             return false;
         }
 
-        $movie_dir= $output_dir . '/movies';
-        $thumbnail_dir = $output_dir . '/thumbnails';
+        $movie_dir= $thumbnail_out_dir ? $output_dir : $output_dir . '/movies';
+        $thumbnail_dir = $thumbnail_out_dir ?? $output_dir . '/thumbnails';
 
-        if(!file_exists($movie_dir) && !@mkdir($movie_dir)) {
+        if(!$thumbnail_out_dir && !file_exists($movie_dir) && !@mkdir($movie_dir)) {
             echo 'Failed to create output directory\n';
             return false;
         }
 
-        if(!file_exists($thumbnail_dir) && !@mkdir($thumbnail_dir)) {
+        if(!$thumbnail_out_dir && !file_exists($thumbnail_dir) && !@mkdir($thumbnail_dir)) {
             echo 'Failed to create output directory\n';
             return false;
         }
@@ -315,7 +316,7 @@ class DirectoryProcessor {
             '-c:a aac -b:a 128k ' .
             '-g 60 -keyint_min 60 -sc_threshold 0 ' .
             '-f hls -hls_time 6 -hls_list_size 0 -hls_playlist_type vod ' .
-            '-hls_segment_filename "%s/segment_%%03d.ts" "%s/playlist.m3u8" 2>&1',
+            '-hls_segment_filename "%s/%%d.ts" "%s/playlist.m3u8" 2>&1',
             $ffmpegPath,
             $videoPath,
             $outputDir,
