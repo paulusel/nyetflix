@@ -10,15 +10,15 @@ class Home {
 
     async loadHeroBanner() {
         try {
-            const recent = await api.getRecents();
-            if (recent && recent.length > 0) {
-                const featured = recent[0];
+            const recentRes = await api.getRecents();
+            if (recentRes.movies && recentRes.movies.length > 0) {
+                const featured = recentRes.movies[0];
                 this.heroBanner.innerHTML = `
-                    <img src="${featured.image}" alt="background-image" class="bg-image" />
+                    <img src="${featured.thumbnail}" alt="background-image" class="bg-image" />
                     <div class="dark-left"></div>
                     <div class="dark-bottom"></div>
                     <div class="billboard">
-                        <img src="${featured.image}" alt="bg-img" />
+                        <img src="${featured.thumbnail}" alt="bg-img" />
                         <div class="title">${featured.title}</div>
                         <div class="description">${featured.description}</div>
                         <div class="buttons">
