@@ -15,6 +15,52 @@ class Backend {
         return $db;
     }
 
+    private static function getEpisodeInfo(int $movie_id, PDO $db) : array {
+        $stmnt = $db->prepare("SELECT seasons.movie_id AS series_id, seasons.season_id, seasons.season_no " . 
+            " FROM episodes JOIN seasons ON episodes.season_id = seasons.season_id WHERE episodes.movie_id = ?");
+        $stmnt->execute([$movie_id]);
+        return $stmnt->fetch();
+    }
+
+    private static function getNextEpisode(int $movie_id, PDO $db) {
+        $query = "
+            SELECT
+                next_ep.movie_id AS episode_id,
+                next_ep.episode_no,
+                next_season.season_no,
+                next_season.movie_id AS series_id
+            FROM episodes current_ep
+            JOIN seasons current_season ON current_ep.season_id = current_season.season_id
+
+            -- Left join to find next episode in current season
+            LEFT JOIN episodes next_ep ON current_ep.season_id = next_ep.season_id
+                AND next_ep.episode_no = current_ep.episode_no + 1
+            LEFT JOIN seasons next_season ON current_ep.season_id = next_season.season_id
+
+            -- If no next episode in current season, find first episode of next season
+            LEFT JOIN seasons next_series_season ON current_season.movie_id = next_series_season.movie_id
+                AND current_season.season_no + 1 = next_series_season.season_no
+            LEFT JOIN episodes first_next_season_ep ON next_series_season.season_id = first_next_season_ep.season_id
+                AND first_next_season_ep.episode_no = 1
+
+            WHERE current_ep.movie_id = ?
+            GROUP BY current_ep.movie_id
+            ORDER BY
+                CASE WHEN next_ep.movie_id IS NOT NULL THEN 0 ELSE 1 END,
+                current_season.season_no
+            LIMIT 1
+        ";
+        $stmnt = $db->prepare($query);
+        $stmnt->execute([$movie_id]);
+        return $stmnt->fetch();
+    }
+
+    private static function getMovieType(int $movie_id, PDO $db) : int {
+        $stmnt = $db->prepare("SELECT type FROM movies WHERE movie_id = ?");
+        $stmnt->execute([$movie_id]);
+        return $stmnt->fetch()['type'] ?? 0;
+    }
+
     public static function getMovieDetail(string $movie_id) : array{
         $db = self::connection();
         $stmnt = $db->prepare("SELECT movie_id, title, description, type, ext FROM movies WHERE movie_id = ?");
@@ -251,9 +297,20 @@ class Backend {
 
     public static function insertHistory(int $profile_id, int $movie_id) : void {
         $db = self::connection();
-        $stmnt = $db->prepare("INSERT INTO history (profile_id, movie_id) VALUES (?, ?) " .
-            " ON DUPLICATE KEY UPDATE position = 0");
-        $stmnt->execute([$profile_id, $movie_id]);
+        $type = self::getMovieType($movie_id, $db);
+        if($type === 3) {
+            // this is episode
+            $series = self::getEpisodeInfo($movie_id, $db);
+            $stmnt = $db->prepare("INSERT INTO history (profile_id, movie_id, series_id) VALUES (?, ?, ?) " .
+                " ON DUPLICATE KEY UPDATE position = 0, movie_id = ?");
+            $stmnt->execute([$profile_id, $movie_id, $series['series_id'], $movie_id]);
+        }
+        else {
+            // this is a film
+            $stmnt = $db->prepare("INSERT INTO history (profile_id, movie_id) VALUES (?, ?) " .
+                " ON DUPLICATE KEY UPDATE position = 0");
+            $stmnt->execute([$profile_id, $movie_id]);
+        }
     }
 
     public static function updateHistory(int $profile_id, int $movie_id, float $position) : void {
@@ -316,4 +373,36 @@ class Backend {
         return $stmnt->fetchAll();
     }
 
+    public static function getPlayPosition(int $movie_id, int $profile_id) : array {
+        $db = self::connection();
+        $type = self::getMovieType($movie_id, $db);
+        if($type === 0) {
+            throw new BackendException("movie not found", 404);
+        }
+
+        $playPosition = ['movie_id' => $movie_id, 'position' => -1];
+        if($type !== 2) {
+            $stmnt = $db->prepare("SELECT position FROM history WHERE profile_id = ? AND movie_id = ?");
+            $stmnt->execute([$profile_id, $movie_id]);
+            $history = $stmnt->fetch();
+            $playPosition['position'] = $history['position'] ?? -1;
+        }
+        else {
+            $stmnt = $db->prepare("SELECT movie_id, position FROM history WHERE profile_id = ? AND series_id = ?");
+            $stmnt->execute([$profile_id, $movie_id]);
+            $history = $stmnt->fetch();
+            if($history) {
+                $playPosition['movie_id'] = $history['movie_id'];
+                $playPosition['position'] = $history['position'];
+            }
+            else {
+                $stmnt = $db->prepare("SELECT episodes.movie_id FROM seasons JOIN episodes ON seasons.season_id = episodes.season_id " .
+                    " WHERE episode_no = 1 AND season_no = 1 AND seasons.movie_id = ?");
+                $stmnt->execute([$movie_id]);
+                $episode = $stmnt->fetch();
+                $playPosition['movie_id'] = $episode['movie_id'];
+            }
+        }
+        return $playPosition;
+    }
 }
