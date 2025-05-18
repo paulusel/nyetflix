@@ -63,7 +63,6 @@ class Home {
 
     async playVideo(movie_id) {
         try {
-
             this.videoPlayer.style.display = 'block';
             document.body.style.overflow = 'hidden';
 
@@ -71,11 +70,15 @@ class Home {
                 this.hls.destroy();
             }
 
-            this.hls = getStreamer('/nyetflix/api/watchMovie.php', movie_id);
-            this.hls.loadSource(`dummy://${movie_id}.m3u8`);
+            const response = await api.watchMovie(movie_id);
+            this.hls = getStreamer('/nyetflix/api/playMovie.php', response.movie.movie_id, response.movie.position);
             this.hls.attachMedia(this.video);
+            this.hls.loadSource(`dummy://${movie_id}.m3u8`);
             this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 this.video.play();
+            });
+            this.hls.on(Hls.Events.ERROR, (event, data) => {
+                console.error('Error occurred in streamer:', data);
             });
         } catch (error) {
             console.error('Failed to play video:', error);
@@ -84,14 +87,14 @@ class Home {
     }
 
     closeVideo() {
-        if (this.hls) {
-            this.hls.destroy();
-            this.hls = null;
-        }
         this.video.pause();
         this.video.src = '';
         this.videoPlayer.style.display = 'none';
         document.body.style.overflow = '';
+        if (this.hls) {
+            this.hls.destroy();
+            this.hls = null;
+        }
     }
 
     async init() {
@@ -115,10 +118,8 @@ class Home {
     }
 }
 
-// Initialize Feather icons
 feather.replace();
 
-// Initialize home page
 const home = new Home();
 document.addEventListener('DOMContentLoaded', () => {
     home.init();

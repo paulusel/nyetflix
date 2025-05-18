@@ -120,11 +120,11 @@ const api = {
     },
 
     async addToList(movieId) {
-        return this.request('addToList.php', movieId);
+        return this.request('addToList.php', Number(movieId));
     },
 
     async removeFromList(movieId) {
-        return this.request('removeFromList.php', movieId);
+        return this.request('removeFromList.php', Number(movieId));
     },
 
     // User information
@@ -135,6 +135,10 @@ const api = {
     // Watch history
     async getHistory() {
         return this.request('getHistory.php');
+    },
+
+    async watchMovie(movieId) {
+        return this.request('watchMovie.php', Number(movieId));
     }
 };
 

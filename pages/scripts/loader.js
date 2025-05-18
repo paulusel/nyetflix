@@ -75,29 +75,7 @@ function getStreamer(url, movie_id, startPosition = -1) {
         movie_id: movie_id,
         url: url
     };
-
-    const hls = new Hls(config);
-
-    hls.on(Hls.Events.ERROR, (event, data) => {
-        if (data.fatal) {
-            switch (data.type) {
-                case Hls.ErrorTypes.NETWORK_ERROR:
-                    console.error('Network error:', data);
-                    this.hls.startLoad();
-                    break;
-                case Hls.ErrorTypes.MEDIA_ERROR:
-                    console.error('Media error:', data);
-                    this.hls.recoverMediaError();
-                    break;
-                default:
-                    console.error('Fatal error:', data);
-                    this.closeVideo();
-                    break;
-            }
-        }
-    });
-
-    return hls;
+    return new Hls(config);
 }
 
 export { getStreamer };
