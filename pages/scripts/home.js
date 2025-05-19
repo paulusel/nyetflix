@@ -12,15 +12,25 @@ class Home {
         this.closeBtn = document.querySelector('.close-btn');
         this.hls = null;
         this.currentContent = 'home';
+        this.nav = document.querySelector('nav');
 
         // event handlers
         this.closeBtn.addEventListener('click', () => { this.closeVideo(); });
         this.video.addEventListener('ended', () => { this.movieEnded(); });
         this.video.addEventListener('timeupdate', () => { this.reportProgress(); });
         document.addEventListener('playVideo', (e) => this.playVideo(e.detail.movieId));
+        window.addEventListener('scroll', () => this.handleScroll());
 
         // setup navigation
         this.setupNavigation();
+    }
+
+    handleScroll() {
+        if (window.scrollY > 50) {
+            this.nav.classList.add('scrolled');
+        } else {
+            this.nav.classList.remove('scrolled');
+        }
     }
 
     setupNavigation() {
