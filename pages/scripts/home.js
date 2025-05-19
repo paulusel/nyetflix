@@ -14,6 +14,15 @@ class Home {
         this.currentContent = 'home';
         this.nav = document.querySelector('nav');
 
+        // Profile elements
+        this.profileDropdown = document.querySelector('.profile-dropdown');
+        this.profileIcon = document.querySelector('.profile-icon');
+        this.profilesList = document.querySelector('.profiles-list');
+        this.logoutButton = document.querySelector('.logout');
+
+        // Initialize profile management
+        this.initProfileManagement();
+
         // event handlers
         this.closeBtn.addEventListener('click', () => { this.closeVideo(); });
         this.video.addEventListener('ended', () => { this.movieEnded(); });
@@ -23,6 +32,103 @@ class Home {
 
         // setup navigation
         this.setupNavigation();
+    }
+
+    initProfileManagement() {
+        // Load profiles on initialization
+        this.loadProfiles();
+
+        // Toggle dropdown on profile icon click
+        this.profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.profileDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.profileDropdown.contains(e.target)) {
+                this.profileDropdown.classList.remove('active');
+            }
+        });
+
+        // Handle logout
+        this.logoutButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.handleLogout();
+        });
+    }
+
+    async loadProfiles() {
+        try {
+            const result = await api.getAllProfiles();
+            const currentProfile = await api.getMe();
+
+            // Update current profile image
+            if (currentProfile && currentProfile.profile_id) {
+                const currentProfileData = result.profiles.find(p => p.profile_id === currentProfile.profile_id);
+                if (currentProfileData && currentProfileData.picture) {
+                    this.profileIcon.src = currentProfileData.picture;
+                }
+            }
+
+            // Populate profiles list
+            this.profilesList.innerHTML = '';
+
+            // First, add the current profile at the top
+            if (currentProfile && currentProfile.profile_id) {
+                const currentProfileData = result.profiles.find(p => p.profile_id === currentProfile.profile_id);
+                if (currentProfileData) {
+                    const currentProfileOption = document.createElement('div');
+                    currentProfileOption.className = 'profile-option current';
+                    currentProfileOption.innerHTML = `
+                        <img src="${currentProfileData.picture || 'assets/images/Profile/Profile1.png'}" alt="${currentProfileData.name}">
+                        <span>${currentProfileData.name}</span>
+                    `;
+                    this.profilesList.appendChild(currentProfileOption);
+                }
+            }
+
+            // Then add other profiles
+            result.profiles.forEach(profile => {
+                if (!currentProfile || profile.profile_id !== currentProfile.profile_id) {
+                    const profileOption = document.createElement('div');
+                    profileOption.className = 'profile-option';
+                    profileOption.innerHTML = `
+                        <img src="${profile.picture || 'assets/images/Profile/Profile1.png'}" alt="${profile.name}">
+                        <span>${profile.name}</span>
+                    `;
+                    profileOption.addEventListener('click', () => this.handleProfileSwitch(profile.profile_id));
+                    this.profilesList.appendChild(profileOption);
+                }
+            });
+
+        } catch (error) {
+            console.error('Error loading profiles:', error);
+            // Set default profile image if loading fails
+            this.profileIcon.src = 'assets/images/Profile/Profile1.png';
+        }
+    }
+
+    async handleProfileSwitch(profileId) {
+        try {
+            const result = await api.setProfile(profileId);
+            if (result.ok) {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Error switching profile:', error);
+        }
+    }
+
+    async handleLogout() {
+        try {
+            api.clearToken();
+            window.location.href = 'signin.php';
+        } catch (error) {
+            console.error('Error logging out:', error);
+            // Force redirect even if there's an error
+            window.location.href = 'signin.php';
+        }
     }
 
     handleScroll() {

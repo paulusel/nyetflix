@@ -75,8 +75,25 @@ catch(Exception $e) {
                         <i data-feather="bell"></i>
                     </div>
                     <div class="nav-item icon">
-                        <img alt="profile icon" />
-                        <i class="hide" data-feather="chevron-down"></i>
+                        <div class="profile-dropdown">
+                            <img src="assets/images/Profile/Profile1.png" alt="Profile" class="profile-icon">
+                            <div class="dropdown-menu">
+                                <div class="profiles-list">
+                                    <!-- Profiles will be loaded here -->
+                                </div>
+                                <div class="divider"></div>
+                                <div class="menu-actions">
+                                    <a href="profile.php" class="manage-profiles">
+                                        <i class="fa fa-cog"></i>
+                                        Manage Profiles
+                                    </a>
+                                    <a href="#" class="logout">
+                                        <i class="fa fa-sign-out"></i>
+                                        Log out
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </ul>
             </div>
