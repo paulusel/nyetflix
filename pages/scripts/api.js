@@ -90,6 +90,10 @@ const api = {
         return this.request('getAllProfiles.php');
     },
 
+    async deleteProfile(profileId) {
+        return this.request('deleteProfile.php', { profile_id: profileId });
+    },
+
     // Content methods
     async getFilms() {
         return this.request('getFilms.php');
