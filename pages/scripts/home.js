@@ -38,15 +38,11 @@ class Home {
         // Load profiles into dropdown
         this.loadProfiles();
 
-        // Setup logout
-        const logoutBtn = document.getElementById('logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                api.clearToken();
-                window.location.href = 'signin.php';
-            });
-        }
+        // Handle logout
+        this.logoutButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.handleLogout();
+        });
     }
 
     async loadProfiles() {
@@ -109,6 +105,11 @@ class Home {
         } catch (error) {
             console.error('Error switching profile:', error);
         }
+    }
+
+    async handleLogout() {
+        api.clearToken();
+        window.location.href = 'signin.php';
     }
 
     handleScroll() {
