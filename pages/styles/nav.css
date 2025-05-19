@@ -41,6 +41,16 @@ nav.scrolled::before {
 .brand {
   width: 100px;
   height: auto;
+  position: relative;
+  z-index: 1001;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+nav.scrolled .brand {
+  background-color: transparent;
 }
 
 .left {
