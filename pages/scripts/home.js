@@ -228,7 +228,6 @@ class Home {
                 <div class="dark-left"></div>
                 <div class="dark-bottom"></div>
                 <div class="billboard">
-                    <img src="${featured.thumbnail}" alt="bg-img" />
                     <div class="title">${featured.title}</div>
                     <div class="description">${featured.description}</div>
                     <div class="buttons">
