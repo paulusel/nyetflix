@@ -91,7 +91,7 @@ const api = {
     },
 
     async deleteProfile(profileId) {
-        return this.request('deleteProfile.php', { profile_id: profileId });
+        return this.request('deleteProfile.php', profileId);
     },
 
     async updateProfile(profileId, new_name) {

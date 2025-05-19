@@ -31,7 +31,7 @@ class AccountManager {
 
         // Event listeners
         this.addProfileBtn.addEventListener('click', () => this.showModal(this.addProfileModal));
-        this.deleteAccountBtn.addEventListener('click', () => this.showModal(this.deleteConfirmationModal));
+        this.deleteAccountBtn.addEventListener('click', () => this.showDeleteConfirmation());
 
         // Form submissions
         this.addProfileForm.addEventListener('submit', (e) => this.handleAddProfile(e));
@@ -136,7 +136,7 @@ class AccountManager {
         const name = formData.get('name');
 
         try {
-            const result = await api.updateProfile(profileId, { name });
+            const result = await api.updateProfile(profileId, name);
             if (result.ok) {
                 this.hideAllModals();
                 await this.loadProfiles();
@@ -149,11 +149,18 @@ class AccountManager {
     showDeleteConfirmation(profileId) {
         this.showModal(this.deleteConfirmationModal);
         const deleteBtn = this.deleteConfirmationModal.querySelector('.delete-btn');
-        deleteBtn.onclick = () => this.handleDeleteProfile(profileId);
+        if (profileId) {
+            // If profileId is provided, we're deleting a profile
+            deleteBtn.onclick = () => this.handleDeleteProfile(profileId);
+        } else {
+            // If no profileId, we're deleting the account
+            deleteBtn.onclick = () => this.handleDeleteAccount();
+        }
     }
 
     async handleDeleteProfile(profileId) {
         try {
+            console.log('profileId', profileId);
             const result = await api.deleteProfile(profileId);
             if (result.ok) {
                 this.hideAllModals();
@@ -165,6 +172,33 @@ class AccountManager {
             const errorMessage = document.createElement('div');
             errorMessage.className = 'error-message';
             errorMessage.textContent = 'Failed to delete profile. Please try again.';
+            this.profilesGrid.appendChild(errorMessage);
+            setTimeout(() => errorMessage.remove(), 3000);
+        }
+    }
+
+    async handleDeleteAccount() {
+        try {
+            console.log('Attempting to delete account...');
+            const result = await api.deleteUser();
+            console.log('Delete account result:', result);
+            if (result.ok) {
+                this.hideAllModals();
+                window.location.href = 'signin.php';
+            } else {
+                // Show error message to user
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.textContent = 'Failed to delete account. Please try again.';
+                this.profilesGrid.appendChild(errorMessage);
+                setTimeout(() => errorMessage.remove(), 3000);
+            }
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            // Show error message to user
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.textContent = 'Failed to delete account. Please try again.';
             this.profilesGrid.appendChild(errorMessage);
             setTimeout(() => errorMessage.remove(), 3000);
         }
