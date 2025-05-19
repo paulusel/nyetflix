@@ -159,7 +159,7 @@ const api = {
     },
 
     async deleteUser() {
-        const result = await this.request();
+        const result = await this.request('deleteUser.php');
         this.clearToken();
         return result;
     }
