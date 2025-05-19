@@ -21,7 +21,7 @@ class Home {
         this.logoutButton = document.querySelector('.logout');
 
         // Initialize profile management
-        this.initProfileManagement();
+        this.setupProfileManagement();
 
         // event handlers
         this.closeBtn.addEventListener('click', () => { this.closeVideo(); });
@@ -34,15 +34,19 @@ class Home {
         this.setupNavigation();
     }
 
-    initProfileManagement() {
-        // Load profiles on initialization
+    setupProfileManagement() {
+        // Load profiles into dropdown
         this.loadProfiles();
 
-        // Handle logout
-        this.logoutButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.handleLogout();
-        });
+        // Setup logout
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                api.clearToken();
+                window.location.href = 'signin.php';
+            });
+        }
     }
 
     async loadProfiles() {
@@ -104,17 +108,6 @@ class Home {
             }
         } catch (error) {
             console.error('Error switching profile:', error);
-        }
-    }
-
-    async handleLogout() {
-        try {
-            api.clearToken();
-            window.location.href = 'signin.php';
-        } catch (error) {
-            console.error('Error logging out:', error);
-            // Force redirect even if there's an error
-            window.location.href = 'signin.php';
         }
     }
 

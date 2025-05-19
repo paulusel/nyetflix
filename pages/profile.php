@@ -29,7 +29,11 @@ catch(Exception $e) {
             <div id="profile-list-container" class="profile-list-container">
                 <!-- Profiles will be loaded here -->
             </div>
-            <button id="manage-profiles-btn" class="manage-button">MANAGE PROFILES</button>
+            <div class="profile-actions">
+                <a href="account.php" class="manage-profiles-btn">
+                    <i class="fa fa-cog"></i> Manage Profiles
+                </a>
+            </div>
         </div>
     </div>
     <script type="module" src="scripts/profile.js"></script>
