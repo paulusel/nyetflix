@@ -190,12 +190,22 @@ class Backend {
             throw new BackendException('invalid profile data. required fields missing or empty', 400);
         }
 
-        $db = self::connection();
-        $stmnt = $db->prepare("INSERT INTO profiles (user_id, name, picture) VALUES (?, ?, ?)");
-        $stmnt->execute([$profile['user_id'], $profile['name'], $profile['picture'] ?? null]);
+        try {
+            $db = self::connection();
+            $stmnt = $db->prepare("INSERT INTO profiles (user_id, name, picture) VALUES (?, ?, ?)");
+            $stmnt->execute([$profile['user_id'], $profile['name'], $profile['picture'] ?? null]);
 
-        $profile['profile_id'] = $db->lastInsertId();
-        return $profile;
+            $profile['profile_id'] = $db->lastInsertId();
+            return $profile;
+        }
+        catch(PDOException $e) {
+            if($e->errorInfo[1] === 1062) {
+                throw new BackendException("profile already exists", 400);
+            }
+            else {
+                throw $e;
+            }
+        }
     }
 
     public static function getProfile(int $profile_id) : array {
