@@ -156,6 +156,12 @@ const api = {
 
     async reportProgress(movieId, position) {
         return this.request('reportProgress.php', {movie_id : movieId, position : position});
+    },
+
+    async deleteUser() {
+        const result = await this.request();
+        this.clearToken();
+        return result;
     }
 };
 
