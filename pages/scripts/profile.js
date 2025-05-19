@@ -15,7 +15,7 @@ const profile = {
                     profileElement.innerHTML = `
                         <div class="avatar-wrapper"
                             <div class="profile-avatar">
-                                <img src="${profile.picture || './assets/images/Profile/Profile1.png'}" alt="${profile.name}">
+                                <img src="${profile.picture || 'assets/images/Profile/Profile1.png'}" alt="${profile.name}">
                             </div>
                             <span class="profile-name">${profile.name}</span>
                         </div>

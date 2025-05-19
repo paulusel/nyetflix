@@ -21,12 +21,12 @@ catch(Exception $e) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Netflix</title>
     <link href="./assets/images/Icon/Icon.ico" rel="icon" type="image/x-icon" />
-    <link href="./styles/index.css" rel="stylesheet" type="text/css" />
-    <link href="./styles/main.css" rel="stylesheet" type="text/css" />
-    <link href="./styles/nav.css" rel="stylesheet" type="text/css" />
-    <link href="./styles/content-row.css" rel="stylesheet" type="text/css" />
-    <link href="./styles/top.css" rel="stylesheet" type="text/css" />
-    <link href="./styles/footer.css" rel="stylesheet" type="text/css" />
+    <link href="styles/index.css" rel="stylesheet" type="text/css" />
+    <link href="styles/main.css" rel="stylesheet" type="text/css" />
+    <link href="styles/nav.css" rel="stylesheet" type="text/css" />
+    <link href="styles/content-row.css" rel="stylesheet" type="text/css" />
+    <link href="styles/top.css" rel="stylesheet" type="text/css" />
+    <link href="styles/footer.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <style>
         .loading-overlay {
@@ -130,7 +130,7 @@ catch(Exception $e) {
     <header>
         <nav>
             <div class="left">
-                <img src="./assets/images/Icon/logo.png" class="brand" />
+                <img src="assets/images/Icon/logo.png" class="brand" />
                 <div class="nav-item small">Browse</div>
                 <ul class="nav-items">
                     <a href="home.php" class="nav-items"><li class="nav-item">Home</li></a>
@@ -167,6 +167,38 @@ catch(Exception $e) {
         <!-- Content rows will be added here by JavaScript -->
         <div id="content-rows"></div>
     </main>
+
+    <footer class="column">
+        <div class="social-icons row">
+          <i class="fa fa-facebook social-icon"></i>
+          <i class="fa fa-instagram social-icon"></i>
+          <i class="fa fa-youtube social-icon"></i>
+        </div>
+
+        <div class="footer-links">
+            <a href="#" class="footer-link">Audio Description</a>
+            <a href="#" class="footer-link">Help Center</a>
+            <a href="#" class="footer-link">Gift Cards</a>
+            <a href="#" class="footer-link">Media Center</a>
+            <a href="#" class="footer-link">Investor Relations</a>
+            <a href="#" class="footer-link">Jobs</a>
+            <a href="#" class="footer-link">Terms of use</a>
+            <a href="#" class="footer-link">Privacy</a>
+            <a href="#" class="footer-link">Legal Notices</a>
+            <a href="#" class="footer-link">Cookie Preferences</a>
+            <a href="#" class="footer-link">Coorperate Information</a>
+            <a href="#" class="footer-link">Contact us</a>
+        </div>
+
+        <div class="footer-service">
+            <button class="service-code">Service Code</button>
+        </div>
+
+            <div class="footer-copyright">
+            &copy; 2025 Nyetflix, Inc.
+            </div>
+      </footer>
+
 
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="scripts/hls.min.js"></script>
