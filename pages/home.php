@@ -133,12 +133,12 @@ catch(Exception $e) {
                 <img src="assets/images/Icon/logo.png" class="brand" />
                 <div class="nav-item small">Browse</div>
                 <ul class="nav-items">
-                    <a href="home.php" class="nav-items"><li class="nav-item">Home</li></a>
-                    <a href="TvSeries.php" class="nav-items"><li class="nav-item">TV Shows</li></a>
-                    <a href="#" class="nav-items"><li class="nav-item">Movies</li></a>
-                    <a href="#" class="nav-items"><li class="nav-item">Latest</li></a>
-                    <a href="#" class="nav-items"><li class="nav-item">My List</li></a>
-                    <a href="#" class="nav-items"><li class="nav-item">Browse by Languages</li></a>
+                    <a href="#" class="nav-items" data-content="home"><li class="nav-item">Home</li></a>
+                    <a href="#" class="nav-items" data-content="series"><li class="nav-item">TV Shows</li></a>
+                    <a href="#" class="nav-items" data-content="films"><li class="nav-item">Movies</li></a>
+                    <a href="#" class="nav-items" data-content="latest"><li class="nav-item">Latest</li></a>
+                    <a href="#" class="nav-items" data-content="mylist"><li class="nav-item">My List</li></a>
+                    <a href="#" class="nav-items" data-content="languages"><li class="nav-item">Browse by Languages</li></a>
                 </ul>
             </div>
             <div class="right">
