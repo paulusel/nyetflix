@@ -11,14 +11,8 @@ const signup = {
         try {
             await api.subscribe(name, username, password);
             const profiles = await api.getAllProfiles();
-            const setProfileResult = await api.setProfile(profiles.profiles[0].profile_id);
-            if (setProfileResult.auth_token) {
-                localStorage.setItem('auth_token', setProfileResult.auth_token);
-                window.location.href = 'home.php';
-            }
-            else {
-                throw new Error('Failed to set profile');
-            }
+            await api.setProfile(profiles.profiles[0].profile_id);
+            window.location.href = 'home.php';
         } catch (error) {
             console.error('Signup error:', error);
             alert(error.message || 'Failed to sign up. Please try again.');
