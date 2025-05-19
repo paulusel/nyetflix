@@ -38,19 +38,6 @@ class Home {
         // Load profiles on initialization
         this.loadProfiles();
 
-        // Toggle dropdown on profile icon click
-        this.profileIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.profileDropdown.classList.toggle('active');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!this.profileDropdown.contains(e.target)) {
-                this.profileDropdown.classList.remove('active');
-            }
-        });
-
         // Handle logout
         this.logoutButton.addEventListener('click', (e) => {
             e.preventDefault();

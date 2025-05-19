@@ -98,8 +98,20 @@
     margin-top: 10px;
 }
 
-.profile-dropdown.active .dropdown-menu {
+/* Create a hover area that includes both icon and menu */
+.profile-dropdown:hover .dropdown-menu {
     display: block;
+}
+
+/* Add padding to create a hover bridge between icon and menu */
+.profile-dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 10px; /* This creates a hover bridge */
+    background: transparent;
 }
 
 .profiles-list {
