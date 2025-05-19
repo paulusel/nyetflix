@@ -22,32 +22,23 @@ class Backend {
         return $stmnt->fetch();
     }
 
-    private static function getNextEpisode(int $movie_id, PDO $db) {
+    private static function getNextEpisode(int $movie_id, PDO $db) : array|false {
         $query = "
             SELECT
-                next_ep.movie_id AS episode_id,
-                next_ep.episode_no,
-                next_season.season_no,
-                next_season.movie_id AS series_id
+                COALESCE(next_ep.movie_id, first_next_season_ep.movie_id) AS episode_id,
+                COALESCE(next_ep.episode_no, first_next_season_ep.episode_no) AS episode_no,
+                COALESCE(next_season.season_no, next_series_season.season_no) AS season_no,
+                current_season.movie_id AS series_id
             FROM episodes current_ep
             JOIN seasons current_season ON current_ep.season_id = current_season.season_id
-
-            -- Left join to find next episode in current season
             LEFT JOIN episodes next_ep ON current_ep.season_id = next_ep.season_id
                 AND next_ep.episode_no = current_ep.episode_no + 1
-            LEFT JOIN seasons next_season ON current_ep.season_id = next_season.season_id
-
-            -- If no next episode in current season, find first episode of next season
+            LEFT JOIN seasons next_season ON next_ep.season_id = next_season.season_id
             LEFT JOIN seasons next_series_season ON current_season.movie_id = next_series_season.movie_id
                 AND current_season.season_no + 1 = next_series_season.season_no
             LEFT JOIN episodes first_next_season_ep ON next_series_season.season_id = first_next_season_ep.season_id
                 AND first_next_season_ep.episode_no = 1
-
             WHERE current_ep.movie_id = ?
-            GROUP BY current_ep.movie_id
-            ORDER BY
-                CASE WHEN next_ep.movie_id IS NOT NULL THEN 0 ELSE 1 END,
-                current_season.season_no
             LIMIT 1
         ";
         $stmnt = $db->prepare($query);
@@ -61,11 +52,43 @@ class Backend {
         return $stmnt->fetch()['type'] ?? 0;
     }
 
-    public static function getMovieDetail(string $movie_id) : array{
-        $db = self::connection();
+    private static function getMovie(int $movie_id, PDO $db) : array|null {
         $stmnt = $db->prepare("SELECT movie_id, title, description, type, ext FROM movies WHERE movie_id = ?");
         $stmnt->execute([$movie_id]);
-        $movie = $stmnt->fetch();
+        return $stmnt->fetch();
+    }
+
+    private static function getRandomMovies(int $count, PDO $db) : array {
+        $query = "
+            SELECT m.movie_id, m.type, m.ext
+            FROM movies m
+            JOIN (
+                SELECT movie_id
+                FROM movies
+                WHERE type IN (1, 2)
+                ORDER BY RAND()
+                LIMIT :count
+            ) AS random_movies ON m.movie_id = random_movies.movie_id
+        ";
+        $stmnt = $db->prepare($query);
+        $stmnt->bindValue(':count', $count, PDO::PARAM_INT);
+        $stmnt->execute();
+        return $stmnt->fetchAll();
+    }
+
+    public static function pickRandomMovies(int $count) : array {
+        if($count < 1) {
+            throw new BackendException("invalid count given", 400);
+        }
+
+        $db = self::connection();
+        return self::getRandomMovies($count, $db);
+    }
+
+    public static function getMovieDetail(int $movie_id) : array {
+        $db = self::connection();
+        $movie = self::getMovie($movie_id, $db);
+
         if(!$movie) {
             throw new BackendException("movie not found", 404);
         }
@@ -279,22 +302,6 @@ class Backend {
         }
     }
 
-    public function verifyUser(string $email, string $password) : array {
-        $stmt = $this->db->prepare("SELECT id, name, email, password FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-
-        if (!password_verify($password, $user['password'])) {
-            throw new BackendException("Invalid credentials", 401);
-        }
-
-        return [
-            'id' => $user['id'],
-            'name' => $user['name'],
-            'email' => $user['email']
-        ];
-    }
-
     public static function insertHistory(int $profile_id, int $movie_id) : void {
         $db = self::connection();
         $type = self::getMovieType($movie_id, $db);
@@ -318,6 +325,28 @@ class Backend {
         $db = self::connection();
         $stmnt = $db->prepare("UPDATE history SET position = ? WHERE profile_id = ? AND movie_id = ?");
         $stmnt->execute([$position, $profile_id, $movie_id]);
+    }
+
+
+    /**
+     *   Fist clearns current movie history and return chosen next movie info
+     */
+    public static function getNextPlay(int $movie_id, int $profile_id) : array {
+        $db = self::connection();
+
+        $next_episode = self::getNextEpisode($movie_id, $db);
+        if($next_episode['episode_id']) {
+            $stmnt = $db->prepare("UPDATE history SET movie_id = ?, position = 0 WHERE profile_id = ? AND movie_id = ?");
+            $stmnt->execute([$next_episode['episode_id'], $profile_id, $movie_id]);
+            return self::getMovie($next_episode['episode_id'], $db);
+        }
+        else {
+            $stmnt = $db->prepare("DELETE FROM history WHERE profile_id = ? AND movie_id = ?");
+            $stmnt->execute([$profile_id, $movie_id]);
+            $movies = self::getRandomMovies(2, $db);
+            $next_movie = $movies[0]['movie_id'] === $movie_id ? $movies[1] : $movies[0];
+            return self::getMovie($next_movie['movie_id'], $db);
+        }
     }
 
     public static function getFilmsSeries(int $type) : array {

@@ -24,7 +24,6 @@ try {
             throw new BackendException('missing segment information', 400);
         }
         serveSegment($movie_path, $request['segment_info']);
-        Backend::updateHistory($profile['profile_id'], $movie_id, $request['segment_info']['start']);
     } else {
         throw new BackendException('invalid request type', 400);
     }
