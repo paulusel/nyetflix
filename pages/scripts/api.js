@@ -36,6 +36,7 @@ const api = {
     },
 
     async request(endpoint, data = null) {
+        console.log(endpoint, data);
         const headers = {
             'Content-Type': 'application/json'
         };
@@ -132,6 +133,10 @@ const api = {
         return this.request('getMe.php');
     },
 
+    async pickRandomMovies(count) {
+        return this.request('pickRandomMovies.php', count);
+    },
+
     // Watch history
     async getHistory() {
         return this.request('getHistory.php');
@@ -139,6 +144,14 @@ const api = {
 
     async watchMovie(movieId) {
         return this.request('watchMovie.php', Number(movieId));
+    },
+
+    async getNextPlay(movieId) {
+        return this.request('getNextPlay.php', Number(movieId));
+    },
+
+    async reportProgress(movieId, position) {
+        return this.request('reportProgress.php', {movie_id : movieId, position : position});
     }
 };
 

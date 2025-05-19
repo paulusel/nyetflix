@@ -13,9 +13,30 @@ class Home {
         this.hls = null;
 
         // event handlers
-        this.closeBtn.addEventListener('click', () => this.closeVideo());
-        this.video.addEventListener('ended', () => this.closeVideo());
+        this.closeBtn.addEventListener('click', () => { this.closeVideo(); });
+        this.video.addEventListener('ended', () => { this.movieEnded(); });
+        this.video.addEventListener('timeupdate', () => { this.reportProgress(); });
         document.addEventListener('playVideo', (e) => this.playVideo(e.detail.movieId));
+    }
+
+    async movieEnded() {
+        const data = this.video._customData;
+        const response = await api.getNextPlay(data.movie_id);
+        this.playVideo(response.movie.movie_id);
+    }
+
+
+    async reportProgress() {
+        const data = this.video._customData;
+        if(!data) return;
+
+        const currentPosition = this.video.currentTime;
+        const positionDelta = Math.abs(currentPosition - data.lastReportedPosition);
+
+        if (positionDelta >= 5) {
+            await api.reportProgress(data.movie_id, currentPosition);
+            data.lastReportedPosition = currentPosition;
+        }
     }
 
     async loadHeroBanner() {
@@ -72,8 +93,14 @@ class Home {
 
             const response = await api.watchMovie(movie_id);
             this.hls = getStreamer('/nyetflix/api/playMovie.php', response.movie.movie_id, response.movie.position);
+
+            this.video._customData = {
+                movie_id : response.movie.movie_id,
+                lastReportedPosition : 0
+            };
             this.hls.attachMedia(this.video);
             this.hls.loadSource(`dummy://${movie_id}.m3u8`);
+
             this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 this.video.play();
             });
@@ -87,6 +114,7 @@ class Home {
     }
 
     closeVideo() {
+        this.video._customData = null;
         this.video.pause();
         this.video.src = '';
         this.videoPlayer.style.display = 'none';
