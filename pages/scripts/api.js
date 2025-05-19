@@ -94,6 +94,10 @@ const api = {
         return this.request('deleteProfile.php', { profile_id: profileId });
     },
 
+    async updateProfile(profileId, new_name) {
+        return this.request('updateProfile.php', { profile_id : profileId, name : new_name });
+    },
+
     // Content methods
     async getFilms() {
         return this.request('getFilms.php');
