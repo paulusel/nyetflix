@@ -169,8 +169,8 @@ class DirectoryProcessor {
             return $this->handleError("Database error: " . $e->getMessage());
         }
 
-        $success = false;
         $dirs = scandir($input_path);
+        $season_no = 1;
         foreach ($dirs as $dir) {
             if ($dir === '.' || $dir === '..') {
                 continue;
@@ -181,13 +181,11 @@ class DirectoryProcessor {
                 continue;
             }
 
-            $this->setSavePoint("season");
-            $local_success = $this->processSeason($movie_id, $path) || $success;
-            $local_success ? $this->releaseSavepoint("season") : $this->rollBackToSavepoint("season");
-            $success = $success || $local_success;
+            $success = $this->processSeason($movie_id, $path, $season_no);
+            if(!$success) return false;
+            ++$season_no;
         }
 
-        if(!$success) return false;
 
         $thumbnail_out = "$this->thumbnail_dir/$movie_id.$ext";
         if (!copy($thumbnail, $thumbnail_out)) {
@@ -197,7 +195,7 @@ class DirectoryProcessor {
         return true;
     }
 
-    private function processSeason(int $movie_id, string $input_path) : bool {
+    private function processSeason(int $movie_id, string $input_path, int $season_no) : bool {
         echo "Processing season: $input_path\n";
 
         $season_no = preg_replace('/[^0-9]/', '', basename($input_path));
@@ -217,8 +215,8 @@ class DirectoryProcessor {
             return $this->handleError("Database error: " . $e->getMessage());
         }
 
-        $success = false;
         $dirs = scandir($input_path);
+        $episode_no = 1;
         foreach ($dirs as $dir) {
             if ($dir === '.' || $dir === '..') {
                 continue;
@@ -229,19 +227,17 @@ class DirectoryProcessor {
                 continue;
             }
 
-            $this->setSavePoint("episode");
-            $local_success = $this->processEpisode($season_id, $path);
-            $local_success ? $this->releaseSavepoint("episode") : $this->rollBackToSavepoint("episode");
-            $success = $success || $local_success;
+            $success = $this->processEpisode($season_id, $path, $episode_no);
+            if(!$success) return false;
+            ++$episode_no;
         }
 
-        return $success;
+        return true;
     }
 
-    private function processEpisode(int $season_id, string $input_path) : bool {
+    private function processEpisode(int $season_id, string $input_path, int $episode_no) : bool {
         echo "Processing episode: $input_path\n";
 
-        $episode_no = preg_replace('/[^0-9]/', '', basename($input_path));
         if (empty($episode_no)) {
             echo "Could not determine episode number from folder name: " . basename($input_path) . "\n";
             $episode_no = $this->getInput("Enter episode number");
