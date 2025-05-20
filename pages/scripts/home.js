@@ -139,13 +139,15 @@ class Home {
 
             switch (contentType) {
                 case 'home':
-                    const [recentRes, filmsRes, seriesRes, myListRes] = await Promise.all([
+                    const [continueWatch, recentRes, filmsRes, seriesRes, myListRes] = await Promise.all([
+                        api.getHistory(),
                         api.getRecents(),
                         api.getFilms(),
                         api.getSeries(),
                         api.getMyList()
                     ]);
                     content = [
+                        { title: 'Continue watching', items: continueWatch.history },
                         { title: 'Get In on the Action', items: recentRes.movies },
                         { title: 'New on Netflix', items: filmsRes.films },
                         { title: 'Golden Globe Award-winning TV Comedies', items: seriesRes.series },
